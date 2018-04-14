@@ -1,0 +1,38 @@
+
+:host {
+    display: block;
+}
+
+.dropdown-content {
+    border: 1px black solid;
+    background-color: var(--chlg-dropdown-background-color, white);
+    
+}
+
+.item {
+    &:hover{
+        background-color: var(--chlg-dropdown-active-item-background, grey);
+    }
+    padding-left: var(--chlg-dropdown-content-padding, 5px);
+    padding-right: var(--chlg-dropdown-content-padding, 5px);
+}
+
+.tick {
+    display: inline-block;
+    width: 12px;
+}
+
+.disabled {
+    color: var(--chlg-dropdown-active-item-background, grey);
+    &:hover{
+        background-color: var(--chlg-dropdown-background-color, white);
+    }
+}
+
+.selected {
+    background-color: var(--chlg-dropdown-active-item-background, blue);
+}
+
+.hidden {
+    display: none;
+}

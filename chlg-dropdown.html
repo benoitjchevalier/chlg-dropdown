@@ -1,13 +1,47 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../iron-dropdown/iron-dropdown.html">
+<link rel="import" href="css/chlg-dropdown-styles.html">
 
 <dom-module id="chlg-dropdown">
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
+    <!-- import our compiled sass -->
+    <style include="chlg-dropdown-styles"></style>
+
+    <!-- Button trigger to open/close dropdown -->
+    <button id="trigger" on-tap="_handleTriggerTap" on-mouseenter="_handleTriggerEnter">[[displayedValue]]</button>
+    <!-- iron dropdown will handle positioning of the menu based on the trigger and options -->
+    <iron-dropdown
+      id="dropdown"
+      dynamic-align
+      no-overlap
+      opened="{{opened}}">
+      <!-- actual dropdown menu -->
+      <div slot="dropdown-content" class="dropdown-content">
+        <!-- header slot for external custom content -->
+        <slot name="header"></slot>
+        <!-- list of items -->
+        <template id="menuTemplate" is="dom-repeat" items="[[items]]">
+          <!-- style item based on selection, visibility and disabled -->
+          <div class$="[[_getItemClass(item.selected, item.disabled)]] [[_hideClass(item.hidden)]]" 
+               key="[[item.key]]" 
+               val="[[item.val]]" 
+               on-tap="_handleItemClick">
+            <!-- reserve "tick" space if in multi -->
+            <span class$="tick [[_showClass(multi)]]">
+              <span class$="[[_showClass(item.selected)]]">x </span>
+            </span>
+            <!-- item displayed value -->
+            <span>[[item.value]]</span>
+          </div>
+
+        </template>
+        <!-- footer slot for external custom content -->
+        <slot name="footer"></slot>
+      </div>
+    </iron-dropdown>
+    
+    
   </template>
 
   <script>
@@ -23,12 +57,234 @@
       static get is() { return 'chlg-dropdown'; }
       static get properties() {
         return {
-          prop1: {
+          /**
+           * A flag which reflects/sets the states of the dropdown: menu opened or closed
+           */
+          opened: {
+            type: Boolean,
+            value: false,
+            notify: true
+          },
+
+          /**
+           * Prevents the dropdown from opening on clicking the trigger
+           */
+          disableOpenOnClick: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Allows the dropdown opening on hovering the trigger
+           */
+          openOnHover: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Allows the user to select several items in a dropdown. When enabled each item in the 
+           * dropdown will have a checkbox/tick indicating whether an item is currently selected.
+           * Selecting an item won't close the dropdown to allow further selection
+           */
+          multi: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * represents the value(s) currently selected. Based on `selectBy` it's either :
+           * - an item value
+           * - an item key
+           * - a complete item
+           * 
+           * if `multi` is on then this will be an array rather than a single value
+           */
+          selectedValues: {
+            type: Object,
+            notify: true
+          },
+
+          /**
+           * Drives what is reflected in `selectedValues`. Can be either:
+           * - 'value'
+           * - 'key'
+           * - 'item'
+           */
+          selectBy: {
             type: String,
-            value: 'chlg-dropdown'
-          }
+            value: 'value'
+          },
+
+          /**
+           * The trigger element for opening/closing the dropdown
+           */
+          _triggerElem: {
+            type: HTMLElement
+          },
+
+          items: {
+            type: Array,
+            value: function() {
+              return [];
+            }
+          },
+
+          /**
+           * The text displayed in the trigger element, based on what values are selected. Can be set as well
+           */
+          displayedValue: {
+            type: String,
+            value: 'Test'
+          },
         };
       }
+
+      static get observers() {
+        return ['_updateSelectedValues(items, items.*.selected)'];
+      }
+
+      ready() {
+        super.ready();
+
+        //set the trigger element so we can position the dropdown relative to it
+        this._triggerElem = this.$.trigger;
+      }
+
+      /************************************************************************
+       * Event handlers
+       * *********************************************************************/
+      _handleTriggerTap() {
+        if(!this.disableOpenOnClick) {
+          this.set('opened', true);
+        }
+      }
+      
+      _handleTriggerEnter() {
+        if(this.openOnHover && !this.opened) {
+          this.set('opened', true);
+        }
+      }
+
+      _handleItemClick(evt) {
+
+        //retrieve actual item from dom repeat
+        let item = this.$.menuTemplate.itemForElement(evt.target),
+            index =  this.$.menuTemplate.indexForElement(evt.target);
+        
+        //ignore if item is disabled
+        if(!item.disabled) {
+
+          this._selectItem(item, index);
+
+          if(!this.multi) {
+            //close after selecting an item if we're not in multi mode
+            this.set('opened', false);
+          }
+
+          //notify the selection. Use bubbles and composed to allow traversing shadow dom up
+          this.dispatchEvent(new CustomEvent('chlg-dropdown-item-click', {
+            bubbles: true,
+            composed: true,
+            detail: item
+          }));
+        }
+
+        evt.preventDefault(); 
+      }
+
+      _selectItem(item, index) {
+
+        let info = this._getInfoFromItem(item);
+
+        if(this.multi) {
+
+          //set and notify that this item is now selected
+          this.set('items.' + index + '.selected', !this.items[index].selected);
+
+        } else {
+
+          //make sure all other items are not selected anymore and select this new one
+          for(let i=0; i<this.items.length; i++) {
+            this.set('items.' + i + '.selected', i === index ? true : false);
+          }
+        }
+
+        this._updateSelectedValues();
+      }
+
+      _updateSelectedValues() {
+
+        //debounce call to batch updates
+        this._debouncer = Polymer.Debouncer.debounce(
+        this._debouncer, 
+        Polymer.Async.timeOut.after(10),
+        () => {
+
+        let result;
+
+          if(this.multi) {
+            result = [];
+
+            this.items.forEach((item) => {
+              if(item.selected) {
+                result.push(this._getInfoFromItem(item));
+              }
+            });
+          } else {
+            this.items.forEach((item) => {
+              if(item.selected) {
+                result = this._getInfoFromItem(item);
+              }
+            });
+          }
+
+          this.set('selectedValues', result);
+        });
+      }
+
+      _getInfoFromItem(item) {
+
+        if(this.selectBy === 'item') {
+          return item;
+        } else if (this.selectBy === 'key') {
+          return item.key;
+        } else {
+          
+          //always default back to value even if selectBy is incorrect
+          return item.value
+        }
+      }
+
+      /**********************************************************************
+       * Helpers for dom management: classes, conditional stamping...
+       * *******************************************************************/
+
+      _itemIsSelected(multi, itemIsSelected) {
+        return multi && itemIsSelected;
+      }
+      
+      _getItemClass(selected, disabled, hidden) {
+        let result = 'item ';
+
+        //disabled will trump selected
+        if(disabled) {
+          result += 'disabled';
+        } else if(selected) {
+          result += 'selected';
+        }
+
+        return result;
+      }
+
+      _hideClass(bool) {
+        return bool ? 'hidden' : '';
+      }
+
+      _showClass(bool) {
+        return bool ? '' : 'hidden';
+      }
+
     }
 
     window.customElements.define(ChlgDropdown.is, ChlgDropdown);

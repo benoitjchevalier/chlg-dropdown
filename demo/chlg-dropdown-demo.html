@@ -1,0 +1,121 @@
+
+<link rel="import" href="../chlg-dropdown.html">
+
+<dom-module id="chlg-dropdown-demo">
+  <template>
+    <style>
+        .flex {
+            display: flex;
+            justify-content: space-between;
+        }
+
+    </style>
+
+
+    <div class="flex">
+        <!-- dropdown -->
+        <chlg-dropdown
+            id="dropdown"
+            multi="[[multi]]"
+            selected-values="{{selectedValues}}"
+            items="[[items]]"
+            select-by="[[selectBy]]">
+        </chlg-dropdown>
+
+        <!-- reflection of values -->
+        <span>Selected values: [[_selectedText]]</span>
+    </div>
+
+  </template>
+
+  <script>
+    /**
+     * `chlg-dropdown-demo`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class ChlgDropdownDemo extends Polymer.Element {
+      static get is() { return 'chlg-dropdown-demo'; }
+      static get properties() {
+        return {
+
+          /**
+           * Prevents the dropdown from opening on clicking the trigger
+           */
+          disableOpenOnClick: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Allows the dropdown opening on hovering the trigger
+           */
+          openOnHover: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Allows the user to select several items in a dropdown. When enabled each item in the 
+           * dropdown will have a checkbox/tick indicating whether an item is currently selected.
+           * Selecting an item won't close the dropdown to allow further selection
+           */
+          multi: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * represents the value(s) currently selected. Based on `selectBy` it's either :
+           * - an item value
+           * - an item key
+           * - a complete item
+           * 
+           * if `multi` is on then this will be an array rather than a single value
+           */
+          selectedValues: {
+            type: Object
+          },
+
+          /**
+           * Drives what is reflected in `selectedValues`. Can be either:
+           * - 'value'
+           * - 'key'
+           * - 'item'
+           */
+          selectBy: {
+            type: String,
+            value: 'value'
+          },
+
+         
+          items: {
+            type: Array
+          },
+
+          _selectedText: {
+              type: String,
+              computed: '_computeSelectedText(selectedValues)'
+          },
+
+          /**
+           * The text displayed in the trigger element, based on what values are selected. Can be set as well
+           */
+          displayedValue: {
+            type: String,
+            value: 'Test'
+          },
+        };
+      }
+
+      _computeSelectedText() {
+          return JSON.stringify(this.selectedValues);
+      }
+
+    }
+
+    window.customElements.define(ChlgDropdownDemo.is, ChlgDropdownDemo);
+  </script>
+</dom-module>
