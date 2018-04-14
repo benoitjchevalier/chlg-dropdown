@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="chlg-dropdown">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `chlg-dropdown`
+     * A flexible dropdown for our project
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class ChlgDropdown extends Polymer.Element {
+      static get is() { return 'chlg-dropdown'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'chlg-dropdown'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(ChlgDropdown.is, ChlgDropdown);
+  </script>
+</dom-module>
