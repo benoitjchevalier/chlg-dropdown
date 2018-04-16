@@ -9,7 +9,12 @@
     <style include="chlg-dropdown-styles"></style>
 
     <!-- Button trigger to open/close dropdown -->
-    <button id="trigger" on-tap="_handleTriggerTap" on-mouseenter="_handleTriggerEnter">[[displayedValue]]</button>
+    <button 
+      id="trigger" 
+      on-tap="_handleTriggerTap" 
+      on-mouseenter="_handleTriggerEnter"
+      aria-controls="dropdownContent"
+      aria-expanded="[[!opened]]">[[displayedValue]]</button>
     <!-- iron dropdown will handle positioning of the menu based on the trigger and options -->
     <iron-dropdown
       id="dropdown"
@@ -17,9 +22,17 @@
       no-overlap
       opened="{{opened}}">
       <!-- actual dropdown menu -->
-      <div slot="dropdown-content" class="dropdown-content">
+      <div id="dropdownContent" 
+           aria-hidden="[[!opened]]"
+           slot="dropdown-content" 
+           class="dropdown-content">
         <!-- header slot for external custom content -->
         <slot name="header"></slot>
+        <input
+          id="search"
+          class="[[_showClass(searchMode)]]"
+          value="{{_searchText::input}}">
+        </input>
         <!-- list of items -->
         <template id="menuTemplate" is="dom-repeat" items="[[items]]">
           <!-- style item based on selection, visibility and disabled -->
@@ -123,6 +136,22 @@
             type: HTMLElement
           },
 
+           /**
+           * When enabled adds an input above the first dropdown item to allow searching based on items values
+           */
+          searchMode: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * The string input by the user when searching
+           */
+          _searchText: {
+            type: String,
+            value: ''
+          },
+
           items: {
             type: Array,
             value: function() {
@@ -141,7 +170,10 @@
       }
 
       static get observers() {
-        return ['_updateSelectedValues(items, items.*.selected)'];
+        return [
+          '_updateSelectedValues(items, items.*.selected)',
+          '_filterOnSearch(searchText)'
+          ];
       }
 
       ready() {
@@ -283,6 +315,18 @@
 
       _showClass(bool) {
         return bool ? '' : 'hidden';
+      }
+
+      /**********************************************************************
+       * Logic
+       * *******************************************************************/
+
+      _filterOnSearch() {
+        const items = this.$.menuTemplate.querySelectorAll('.item');
+
+        items.forEach((item, index) => {
+          if(item.value.indexOf(search))
+        });
       }
 
     }
