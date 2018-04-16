@@ -19,7 +19,8 @@
             multi="[[multi]]"
             selected-values="{{selectedValues}}"
             items="[[items]]"
-            select-by="[[selectBy]]">
+            select-by="[[selectBy]]"
+            search-mode="[[searchMode]]">
         </chlg-dropdown>
 
         <!-- reflection of values -->
@@ -58,7 +59,7 @@
           },
 
           /**
-           * Allows the user to select several items in a dropdown. When enabled each item in the 
+           * Allows the user to select several items in a dropdown. When enabled each item in the
            * dropdown will have a checkbox/tick indicating whether an item is currently selected.
            * Selecting an item won't close the dropdown to allow further selection
            */
@@ -72,7 +73,7 @@
            * - an item value
            * - an item key
            * - a complete item
-           * 
+           *
            * if `multi` is on then this will be an array rather than a single value
            */
           selectedValues: {
@@ -90,7 +91,7 @@
             value: 'value'
           },
 
-         
+
           items: {
             type: Array
           },
@@ -98,6 +99,14 @@
           _selectedText: {
               type: String,
               computed: '_computeSelectedText(selectedValues)'
+          },
+
+          /**
+           * When enabled adds an input above the first dropdown item to allow searching based on items values
+           */
+           searchMode: {
+            type: Boolean,
+            value: false
           },
 
           /**

@@ -9,9 +9,9 @@
     <style include="chlg-dropdown-styles"></style>
 
     <!-- Button trigger to open/close dropdown -->
-    <button 
-      id="trigger" 
-      on-tap="_handleTriggerTap" 
+    <button
+      id="trigger"
+      on-tap="_handleTriggerTap"
       on-mouseenter="_handleTriggerEnter"
       aria-controls="dropdownContent"
       aria-expanded="[[!opened]]">[[displayedValue]]</button>
@@ -22,23 +22,24 @@
       no-overlap
       opened="{{opened}}">
       <!-- actual dropdown menu -->
-      <div id="dropdownContent" 
+      <div id="dropdownContent"
            aria-hidden="[[!opened]]"
-           slot="dropdown-content" 
+           slot="dropdown-content"
            class="dropdown-content">
         <!-- header slot for external custom content -->
         <slot name="header"></slot>
-        <input
-          id="search"
-          class="[[_showClass(searchMode)]]"
-          value="{{_searchText::input}}">
-        </input>
+        <!-- search input if needed -->
+        <div class$="[[_showClass(searchMode)]]">
+          <input
+            id="search"
+            autocomplete="off"
+            placeholder=""
+            value="{{_searchText::input}}">
+        </div>
         <!-- list of items -->
         <template id="menuTemplate" is="dom-repeat" items="[[items]]">
           <!-- style item based on selection, visibility and disabled -->
-          <div class$="[[_getItemClass(item.selected, item.disabled)]] [[_hideClass(item.hidden)]]" 
-               key="[[item.key]]" 
-               val="[[item.val]]" 
+          <div class$="[[_getItemClass(item.selected, item.disabled)]] [[_hideClass(item.hidden)]]"
                on-tap="_handleItemClick">
             <!-- reserve "tick" space if in multi -->
             <span class$="tick [[_showClass(multi)]]">
@@ -53,8 +54,8 @@
         <slot name="footer"></slot>
       </div>
     </iron-dropdown>
-    
-    
+
+
   </template>
 
   <script>
@@ -96,7 +97,7 @@
           },
 
           /**
-           * Allows the user to select several items in a dropdown. When enabled each item in the 
+           * Allows the user to select several items in a dropdown. When enabled each item in the
            * dropdown will have a checkbox/tick indicating whether an item is currently selected.
            * Selecting an item won't close the dropdown to allow further selection
            */
@@ -110,7 +111,7 @@
            * - an item value
            * - an item key
            * - a complete item
-           * 
+           *
            * if `multi` is on then this will be an array rather than a single value
            */
           selectedValues: {
@@ -172,7 +173,7 @@
       static get observers() {
         return [
           '_updateSelectedValues(items, items.*.selected)',
-          '_filterOnSearch(searchText)'
+          '_filterOnSearch(_searchText)'
           ];
       }
 
@@ -191,7 +192,7 @@
           this.set('opened', true);
         }
       }
-      
+
       _handleTriggerEnter() {
         if(this.openOnHover && !this.opened) {
           this.set('opened', true);
@@ -203,7 +204,7 @@
         //retrieve actual item from dom repeat
         let item = this.$.menuTemplate.itemForElement(evt.target),
             index =  this.$.menuTemplate.indexForElement(evt.target);
-        
+
         //ignore if item is disabled
         if(!item.disabled) {
 
@@ -222,7 +223,7 @@
           }));
         }
 
-        evt.preventDefault(); 
+        evt.preventDefault();
       }
 
       _selectItem(item, index) {
@@ -249,7 +250,7 @@
 
         //debounce call to batch updates
         this._debouncer = Polymer.Debouncer.debounce(
-        this._debouncer, 
+        this._debouncer,
         Polymer.Async.timeOut.after(10),
         () => {
 
@@ -282,7 +283,7 @@
         } else if (this.selectBy === 'key') {
           return item.key;
         } else {
-          
+
           //always default back to value even if selectBy is incorrect
           return item.value
         }
@@ -295,7 +296,7 @@
       _itemIsSelected(multi, itemIsSelected) {
         return multi && itemIsSelected;
       }
-      
+
       _getItemClass(selected, disabled, hidden) {
         let result = 'item ';
 
@@ -322,10 +323,22 @@
        * *******************************************************************/
 
       _filterOnSearch() {
-        const items = this.$.menuTemplate.querySelectorAll('.item');
 
-        items.forEach((item, index) => {
-          if(item.value.indexOf(search))
+        //fetch all dom items and make the search case insensitive
+        const elements = this.$.dropdownContent.querySelectorAll('.item'),
+              search = this._searchText.toLowerCase();
+
+        //hide and show based on text searched
+        elements.forEach((elem, index) => {
+          let item = this.$.menuTemplate.itemForElement(elem);
+
+          if(item.value.indexOf(search) !== -1) {
+            elem.classList.remove('hidden');
+            elem.setAttribute('aria-hidden', false);
+          } else {
+            elem.classList.add('hidden');
+            elem.setAttribute('aria-hidden', true);
+          }
         });
       }
 
