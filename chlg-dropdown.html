@@ -1,7 +1,12 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../polymer/lib/elements/dom-repeat.html">
+
 <link rel="import" href="../iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="font-awesome-set.html">
+
 <link rel="import" href="css/chlg-dropdown-styles.html">
+
 
 <dom-module id="chlg-dropdown">
   <template>
@@ -15,6 +20,9 @@
       on-mouseenter="_handleTriggerEnter"
       aria-controls="dropdownContent"
       aria-expanded="[[!opened]]">[[displayedValue]]</button>
+    <!-- handle keyboard events for navigation -->
+    <iron-a11y-keys keys="up down space enter tab esc"
+                    on-keys-pressed="_handleKeyboardNav"></iron-a11y-keys>
     <!-- iron dropdown will handle positioning of the menu based on the trigger and options -->
     <iron-dropdown
       id="dropdown"
@@ -29,21 +37,20 @@
         <!-- header slot for external custom content -->
         <slot name="header"></slot>
         <!-- search input if needed -->
-        <div class$="[[_showClass(searchMode)]]">
-          <input
-            id="search"
-            autocomplete="off"
-            placeholder=""
-            value="{{_searchText::input}}">
-        </div>
+        <input
+          id="search"
+          class$="[[_showClass(searchMode)]]"
+          autocomplete="off"
+          value="{{_searchText::input}}">
         <!-- list of items -->
         <template id="menuTemplate" is="dom-repeat" items="[[items]]">
           <!-- style item based on selection, visibility and disabled -->
           <div class$="[[_getItemClass(item.selected, item.disabled)]] [[_hideClass(item.hidden)]]"
-               on-tap="_handleItemClick">
+               on-tap="_handleItemClick"
+               tabindex="-1">
             <!-- reserve "tick" space if in multi -->
             <span class$="tick [[_showClass(multi)]]">
-              <span class$="[[_showClass(item.selected)]]">x </span>
+              <span class$="[[_showClass(item.selected)]]"><iron-icon class="icon" icon="fa:check"></iron-icon></span>
             </span>
             <!-- item displayed value -->
             <span>[[item.value]]</span>
@@ -120,6 +127,13 @@
           },
 
           /**
+           * Keep internal track of selected items "by item" for convenience
+           */
+          _selectedItems: {
+            type: Object
+          },
+
+          /**
            * Drives what is reflected in `selectedValues`. Can be either:
            * - 'value'
            * - 'key'
@@ -153,6 +167,13 @@
             value: ''
           },
 
+          /**
+           * The element currently focused
+           */
+          _currentlyFocused: {
+            type: HTMLElement
+          },
+
           items: {
             type: Array,
             value: function() {
@@ -167,13 +188,29 @@
             type: String,
             value: 'Test'
           },
+
+          /**
+           * allows to customize the displayed value. If defined this function
+           * will be called every time `displayValue` should change. It should
+           * return the desired `displayValue`.
+           * It will be run in the context of the dropdown and will have two
+           * arguments:
+           * - `selectedValues`: same property as the one oin the dropdown
+           * - `value`: represent the selected values, "by value". Will
+           *   be either a string or an array depending on `multi`
+           */
+          displayedValueCustom: {
+            type: Function
+          }
         };
       }
 
       static get observers() {
         return [
           '_updateSelectedValues(items, items.*.selected)',
-          '_filterOnSearch(_searchText)'
+          '_filterOnSearch(_searchText)',
+          '_computeDisplayValue(selectedValues, multi)',
+          '_openedChanged(opened)'
           ];
       }
 
@@ -182,10 +219,19 @@
 
         //set the trigger element so we can position the dropdown relative to it
         this._triggerElem = this.$.trigger;
+        this._handleKeyboardNav = this._handleKeyboardNav.bind(this);
+      }
+
+      attached() {
+        this.addEventListener('keyPress', this._handleKeyboardNav);
+      }
+
+      detached() {
+        this.removeEventListener('keyPress', this._handleKeyboardNav);
       }
 
       /************************************************************************
-       * Event handlers
+       * Input event handlers
        * *********************************************************************/
       _handleTriggerTap() {
         if(!this.disableOpenOnClick) {
@@ -201,29 +247,142 @@
 
       _handleItemClick(evt) {
 
-        //retrieve actual item from dom repeat
-        let item = this.$.menuTemplate.itemForElement(evt.target),
-            index =  this.$.menuTemplate.indexForElement(evt.target);
-
-        //ignore if item is disabled
-        if(!item.disabled) {
-
-          this._selectItem(item, index);
-
-          if(!this.multi) {
-            //close after selecting an item if we're not in multi mode
-            this.set('opened', false);
-          }
-
-          //notify the selection. Use bubbles and composed to allow traversing shadow dom up
-          this.dispatchEvent(new CustomEvent('chlg-dropdown-item-click', {
-            bubbles: true,
-            composed: true,
-            detail: item
-          }));
-        }
+        //select this item and make sure we keep track of the focused
+        //item for keybard nav
+        this._selectElem(evt.target);
+        this._currentlyFocused = evt.target;
 
         evt.preventDefault();
+      }
+
+      /**********************************************************************
+       * Helpers for dom management: classes, conditional stamping...
+       * *******************************************************************/
+
+      _itemIsSelected(multi, itemIsSelected) {
+        return multi && itemIsSelected;
+      }
+
+      _getItemClass(selected, disabled, hidden) {
+        let result = 'item ';
+
+        //disabed trumps selected
+        if(disabled) {
+          result += 'disabled ';
+        } else if(selected) {
+          result += 'selected ';
+        }
+
+        return result;
+      }
+
+      _hideClass(bool) {
+        return bool ? 'hidden' : '';
+      }
+
+      _showClass(bool) {
+        return bool ? '' : 'hidden';
+      }
+
+      /**
+       *  Gets all currently visible dropdown items, including internal slotted content
+       * and input search box
+       */
+      _getCurrentInteractiveItems() {
+        return Polymer.FlattenedNodesObserver.getFlattenedNodes(this.$.dropdownContent).filter(elem => {
+          return elem.nodeType === Node.ELEMENT_NODE && elem.nodeName !== 'DOM-REPEAT' && !elem.classList.contains('hidden') && !elem.classList.contains('disabled');
+          });
+      }
+
+      /**********************************************************************
+       * Logic
+       * *******************************************************************/
+
+      _filterOnSearch() {
+
+        //fetch all dom items and make the search case insensitive
+        const elements = this.$.dropdownContent.querySelectorAll('.item'),
+              search = this._searchText.toLowerCase();
+
+        //hide and show based on text searched
+        elements.forEach((elem, index) => {
+          let item = this.$.menuTemplate.itemForElement(elem);
+
+          if(item.value.toLowerCase().indexOf(search) !== -1) {
+            elem.classList.remove('hidden');
+            elem.setAttribute('aria-hidden', false);
+          } else {
+            elem.classList.add('hidden');
+            elem.setAttribute('aria-hidden', true);
+          }
+        });
+
+        //the content might have changed size, ensure the menu is
+        //positioned correctly
+        this.$.dropdown.notifyResize();
+      }
+
+      _computeDisplayValue() {
+
+        if(this.selectedValues) {
+
+          //either:
+          // - run custom function provided by external dev
+          // - join all values in multi
+          // - display the value in single
+
+          let values = this.multi ? this._selectedItems.map( i => i.value) : this._selectedItems.value;
+
+          if(this.displayedValueCustom) {
+            this.set('displayedValue', this.displayedValueCustom(this.selectedValues, values).bind(this));
+          } else if(this.multi) {
+            this.set('displayedValue', values.join(', '));
+          } else {
+            this.set('displayedValue', values);
+          }
+        }
+      }
+
+      _openedChanged() {
+        if(!this.opened) {
+
+          //reset focused element
+          this._currentlyFocused = null;
+
+          //reset search
+          this._searchText = '';
+        } else {
+
+          //focus first item
+          this._changeItemFocus(true);
+        }
+      }
+
+      _selectElem(elem) {
+
+        if(elem) {
+          //retrieve actual item from dom repeat
+          let item = this.$.menuTemplate.itemForElement(elem),
+              index =  this.$.menuTemplate.indexForElement(elem);
+
+          //ignore if item is disabled
+          if(!item.disabled) {
+
+            this._selectItem(item, index);
+
+            if(!this.multi) {
+              //close after selecting an item if we're not in multi mode
+              this.set('opened', false);
+            }
+
+            //notify the selection. Use bubbles and composed to allow traversing shadow dom up
+            this.dispatchEvent(new CustomEvent('chlg-dropdown-item-selected', {
+              bubbles: true,
+              composed: true,
+              detail: item
+            }));
+          }
+        }
       }
 
       _selectItem(item, index) {
@@ -254,24 +413,29 @@
         Polymer.Async.timeOut.after(10),
         () => {
 
-        let result;
+        let result,
+            internalResult;
 
           if(this.multi) {
             result = [];
+            internalResult = [];
 
             this.items.forEach((item) => {
               if(item.selected) {
                 result.push(this._getInfoFromItem(item));
+                internalResult.push(item);
               }
             });
           } else {
             this.items.forEach((item) => {
               if(item.selected) {
                 result = this._getInfoFromItem(item);
+                internalResult = item;
               }
             });
           }
 
+          this._selectedItems = internalResult;
           this.set('selectedValues', result);
         });
       }
@@ -290,58 +454,100 @@
       }
 
       /**********************************************************************
-       * Helpers for dom management: classes, conditional stamping...
+       * Keyboard navigation
        * *******************************************************************/
 
-      _itemIsSelected(multi, itemIsSelected) {
-        return multi && itemIsSelected;
-      }
 
-      _getItemClass(selected, disabled, hidden) {
-        let result = 'item ';
+      _handleKeyboardNav(evt) {
 
-        //disabled will trump selected
-        if(disabled) {
-          result += 'disabled';
-        } else if(selected) {
-          result += 'selected';
+        switch(evt.detail.keyboardEvent.code) {
+          case 'ArrowUp':
+            this.set('opened', true);
+            //opening will have set the first item
+            //so move backward in both cases
+            this._changeItemFocus(false);
+            break;
+          case 'ArrowDown':
+            if(!this.opened) {
+              this.set('opened', true);
+            } else {
+              this._changeItemFocus(true);
+            }
+            break;
+          case 'Escape':
+            this.set('opened', false);
+            break;
+          case 'Enter':
+          case 'Space':
+            if(!this.opened) {
+              this.set('opened', true);
+            } else {
+              //select focused elem and close if needed
+              this._selectElem(this._currentlyFocused);
+              if(!this.multi) {
+                this.set('opened', false);
+              }
+              evt.detail.keyboardEvent.preventDefault();
+            }
+            break;
+          case 'Tab':
+            //close and let native behavior kick in
+            this.set('opened', false);
+            break;
         }
-
-        return result;
       }
 
-      _hideClass(bool) {
-        return bool ? 'hidden' : '';
-      }
+      /**
+       * Focuses the next or previous items (based on forward argument), based
+       * on `currentlyFocused`
+       */
+      _changeItemFocus(forward) {
 
-      _showClass(bool) {
-        return bool ? '' : 'hidden';
-      }
+        const visibleElements = this._getCurrentInteractiveItems(),
+              currentIndex = visibleElements.indexOf(this._currentlyFocused);
 
-      /**********************************************************************
-       * Logic
-       * *******************************************************************/
+        let toSelect = this._computeFocusIndex(visibleElements, currentIndex, forward);
 
-      _filterOnSearch() {
-
-        //fetch all dom items and make the search case insensitive
-        const elements = this.$.dropdownContent.querySelectorAll('.item'),
-              search = this._searchText.toLowerCase();
-
-        //hide and show based on text searched
-        elements.forEach((elem, index) => {
-          let item = this.$.menuTemplate.itemForElement(elem);
-
-          if(item.value.indexOf(search) !== -1) {
-            elem.classList.remove('hidden');
-            elem.setAttribute('aria-hidden', false);
+        //focus on appropriate element and unfocus all other
+        visibleElements.forEach((elem, i) => {
+          if(i === toSelect) {
+            elem.classList.add('focused');
+            if(elem.focus) {
+              elem.focus();
+            }
+            this._currentlyFocused = elem;
           } else {
-            elem.classList.add('hidden');
-            elem.setAttribute('aria-hidden', true);
+            elem.classList.remove('focused');
           }
         });
       }
 
+      _computeFocusIndex(visibleElements, currentIndex, forward) {
+
+
+        if(forward === null) {
+
+          //refocus current element
+          return currentIndex;
+        } else {
+
+          //by default select first or last based on "direction"
+          let toSelect = forward ? 0 : visibleElements.length -1;
+
+          if(currentIndex !== -1) {
+            toSelect = forward ? currentIndex + 1 : currentIndex - 1;
+
+            //loop through items
+            if(toSelect < 0) {
+              toSelect = visibleElements.length -1;
+            } else if(toSelect > visibleElements.length -1) {
+              toSelect = 0;
+            }
+          }
+
+          return toSelect;
+        }
+      }
     }
 
     window.customElements.define(ChlgDropdown.is, ChlgDropdown);

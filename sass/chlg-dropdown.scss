@@ -4,17 +4,27 @@
 }
 
 .dropdown-content {
-    border: 1px black solid;
-    background-color: var(--chlg-dropdown-background-color, white);
-    
+  border: 1px black solid;
+  background-color: var(--chlg-dropdown-background-color, white);
+  padding: 5px;
 }
 
 .item {
-    &:hover{
-        background-color: var(--chlg-dropdown-active-item-background, grey);
-    }
-    padding-left: var(--chlg-dropdown-content-padding, 5px);
-    padding-right: var(--chlg-dropdown-content-padding, 5px);
+  padding-left: var(--chlg-dropdown-content-padding, 5px);
+  padding-right: var(--chlg-dropdown-content-padding, 5px);
+  cursor: pointer;
+  &:hover {
+    background-color: var(--chlg-dropdown-bg-color--hover, lightgray);
+  }
+  &.selected {
+    background-color: var(--chlg-dropdown-bg-color--selected, blue);
+    color: var(--chlg-dropdown-text-color--selected, white);
+  }
+  &.disabled {
+    color: var(--chlg-dropdown-text-color--disabled, gray);
+    background-color: var(--chlg-dropdown-bg-color--disabled, transparent);
+    cursor: not-allowed;
+  }
 }
 
 .tick {
@@ -22,17 +32,11 @@
     width: 12px;
 }
 
-.disabled {
-    color: var(--chlg-dropdown-active-item-background, grey);
-    &:hover{
-        background-color: var(--chlg-dropdown-background-color, white);
-    }
-}
-
-.selected {
-    background-color: var(--chlg-dropdown-active-item-background, blue);
-}
-
 .hidden {
     display: none;
+}
+
+.icon {
+  --iron-icon-width: 12px;
+  --iron-icon-height: 12px;
 }

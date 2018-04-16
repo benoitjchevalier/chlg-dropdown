@@ -9,7 +9,6 @@
     "url": "https://github.com/benoitjchevalier/chlg-dropdown.git"
   },
   "devDependencies": {
-    "hdx-style": "github.build.ge.com/gehc-hdx/hdx-styles",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-bump": "^2.4.0",
