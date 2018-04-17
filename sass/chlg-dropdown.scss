@@ -1,5 +1,5 @@
 $font: var(--chlg-dropdown-font, 16pt "Arial");
-$item-horizontal-padding: 5px;
+$item-horizontal-padding: 15px;
 $item-height: 40px;
 $focus-ring-margin: 3px;
 
@@ -9,10 +9,12 @@ $focus-ring-margin: 3px;
 }
 
 .dropdown-trigger {
+  display: inline-flex;
+  max-width: var(--chlg-dropdown-trigger-max-width, 200px);
   border-radius: 4px;
   min-height: $item-height;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: $item-horizontal-padding;
+  padding-right: $item-horizontal-padding;
   cursor: pointer;
   font: $font;
   border: 1px solid var(--chlg-dropdown-border-color, #ACACAC);
@@ -69,9 +71,17 @@ $focus-ring-margin: 3px;
   margin: 10px;
 }
 
+.displayedValue {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .tick {
     display: inline-block;
     width: 16px;
+    margin-right: 5px;
+    margin-left: -5px;
 }
 
 .hidden {
@@ -79,5 +89,6 @@ $focus-ring-margin: 3px;
 }
 
 .icon {
-  --iron-icon-width: 12px;
+  --iron-icon-width: 16px;
+  --iron-icon-height: 16px;
 }

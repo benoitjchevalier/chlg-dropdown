@@ -20,7 +20,7 @@
       on-tap="_handleTriggerTap"
       on-mouseenter="_handleTriggerEnter"
       aria-controls="dropdownContent"
-      aria-expanded="[[!opened]]">[[displayedValue]]<span class$="chevron [[_hideClass(hideChevron)]]"><iron-icon class="icon" icon="fa:angle-down"></iron-icon></span></button>
+      aria-expanded="[[!opened]]"><span class="displayedValue">[[displayedValue]]</span><span class$="chevron [[_hideClass(hideChevron)]]"><iron-icon icon="fa:angle-down"></iron-icon></span></button>
     <!-- handle keyboard events for navigation -->
     <iron-a11y-keys keys="up down space enter tab esc"
                     on-keys-pressed="_handleKeyboardNav"></iron-a11y-keys>
@@ -237,15 +237,6 @@
 
         //set the trigger element so we can position the dropdown relative to it
         this._triggerElem = this.$.trigger;
-        this._handleKeyboardNav = this._handleKeyboardNav.bind(this);
-      }
-
-      attached() {
-        this.addEventListener('keyPress', this._handleKeyboardNav);
-      }
-
-      detached() {
-        this.removeEventListener('keyPress', this._handleKeyboardNav);
       }
 
       /************************************************************************
