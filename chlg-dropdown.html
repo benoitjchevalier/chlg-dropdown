@@ -84,6 +84,14 @@
      * @demo demo/index.html
      */
     class ChlgDropdown extends Polymer.Element {
+
+      /**
+      * chlg-dropdown-item-selected, fired when an item is selected in the dropdown
+      * through user interaction: click or keyboard. The detail of the event will contain
+      * the data item representing the item selected
+      *
+      * @event chlg-dropdown-item-selected
+      */
       static get is() { return 'chlg-dropdown'; }
       static get properties() {
         return {
@@ -168,6 +176,16 @@
             type: HTMLElement
           },
 
+          /**
+           * Items to be displayed in the dropdown. Each item is an object that can have
+           * the following properties:
+           * - key (mandatory): unique key for this item
+           * - value (mandatory): value to display for this item
+           * - selected: whether this item should be selected. When a user selects an item
+           * it will be appropriately reflected in the `items` array
+           * - disabled: whether this item should be disabled (different look and can't be
+           * selected)
+           */
           items: {
             type: Array,
             value: function() {
@@ -313,7 +331,7 @@
 
         this._isHoverClosing = true;
         //gives some time before closing to allow for cancellation
-        //(typically when mousing out the trigger to mouse enter the content)
+        //(typically when mousing out the trigger to mouse enter the content and vice versa)
         window.setTimeout(() => {
           if(!this._cancelHoverClose) {
             this.set('opened', false);
