@@ -220,6 +220,31 @@
           interactionMode: {
             type: String,
             value: 'click'
+          },
+
+          /**
+           * Time (ms) after which the dropdown closes when mousing out in
+           * hover interaction mode
+           */
+          _hoverCloseTiming: {
+            type: Number,
+            value: 50
+          },
+
+          /**
+           * used internally to cancel a request for close coming from hover interaction
+           */
+          _cancelHoverClose: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Whetehr a hover request for closing has been issued
+           */
+          _isHoverClosing: {
+            type: Boolean,
+            value: false
           }
         };
       }
@@ -263,25 +288,48 @@
 
         if(this._currentTrigger && this.interactionMode) {
 
-          const open = (e) => {
-                this.set('opened', true);
-              },
-              close = (e) => {
-                this.set('opened', false);
-              },
-              toggle = (e) => {
-                this.set('opened', !this.opened);
-              }
-
           //add interaction based on the mode
           if(this.interactionMode === 'click') {
 
-            this._currentTrigger.addEventListener('tap', toggle);
+            //toggle open/close on click
+            this._currentTrigger.addEventListener('tap', () => {
+              this.set('opened', !this.opened);
+            });
 
           } else if(this.interactionMode === 'hover') {
-            this._currentTrigger.addEventListener('mouseenter', open);
-            this.$.dropdownContent.addEventListener('mouseout', close);
+            this._currentTrigger.addEventListener('mouseenter', this._requestHoverOpen.bind(this));
+            this._currentTrigger.addEventListener('mouseleave', this._requestHoverClose.bind(this))
+            this.$.dropdownContent.addEventListener('mouseenter', this._requestHoverOpen.bind(this));
+            this.$.dropdownContent.addEventListener('mouseleave', this._requestHoverClose.bind(this));
           }
+        }
+      }
+
+      /**********************************************************************
+       * Hover interaction logic
+       * *******************************************************************/
+
+      _requestHoverClose(evt) {
+
+        this._isHoverClosing = true;
+        //gives some time before closing to allow for cancellation
+        //(typically when mousing out the trigger to mouse enter the content)
+        window.setTimeout(() => {
+          if(!this._cancelHoverClose) {
+            this.set('opened', false);
+          }
+          this._cancelHoverClose = false;
+          this._isHoverClosing = false;
+        }, this._hoverCloseTiming);
+      }
+
+      _requestHoverOpen(evt) {
+
+        if(!this.opened) {
+          this.set('opened', true);
+        } else if(this._isHoverClosing) {
+          //make sure we cancel any pending close
+          this._cancelHoverClose = true;
         }
       }
 
@@ -327,7 +375,7 @@
       _triggerSlotChanged(evt) {
         let nodes = this.$.triggerSlot.assignedNodes();
 
-        //use the element that has been given to us as the new trigger
+        //use the slotted element that has been given to us as the new trigger
         if(nodes.length) {
           this.set('_currentTrigger', nodes[0]);
         }
@@ -365,26 +413,29 @@
 
         if(this.selectedValues) {
 
+          //get all selected items by value
+          let values = this.multi ? this._selectedItems.map( i => i.value) : this._selectedItems.value,
+              result = values;
+
           //either:
           // - run custom function provided by external dev
           // - join all values in multi
           // - display the value in single
-
-          let values = this.multi ? this._selectedItems.map( i => i.value) : this._selectedItems.value,
-              result = values;
-
           if(this.displayedValueCustom) {
             result = this.displayedValueCustom(this.selectedValues, values).bind(this);
           } else if(this.multi) {
             result = values.join(', ');
           }
 
+          //if we somehow have no value fallback to the default string
           if(!result) {
             result = this.defaultDisplayedValue;
           }
 
           this.set('displayedValue', result);
         } else {
+
+          //no selected values, use default string
           this.set('displayedValue', this.defaultDisplayedValue);
         }
       }
@@ -422,10 +473,14 @@
         }
       }
 
+      /**
+       * Selects a dropdown item based on an HTML element. Elem is expected to be one of
+       * the '.item' div
+       */
       _selectElem(elem) {
 
         if(elem) {
-          //retrieve actual item from dom repeat
+          //retrieve actual data item from dom repeat
           let item = this.$.menuTemplate.itemForElement(elem),
               index =  this.$.menuTemplate.indexForElement(elem);
 
@@ -449,6 +504,9 @@
         }
       }
 
+      /**
+       * Selects a dropdown item based on the data item
+       */
       _selectItem(item, index) {
 
         let info = this._getInfoFromItem(item);
