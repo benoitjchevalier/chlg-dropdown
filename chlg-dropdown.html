@@ -19,7 +19,7 @@
      <iron-a11y-keys keys="up down space enter tab esc"
      on-keys-pressed="_handleKeyboardNav"></iron-a11y-keys>
 
-    <!-- Button trigger to open/close dropdown -->
+    <!-- trigger to open/close dropdown -->
     <slot id="triggerSlot" name="trigger" on-slotchange="_triggerSlotChanged">
       <!-- default trigger. If people slot a custom trigger externally it will replace
       this one automatically -->
@@ -240,7 +240,7 @@
           },
 
           /**
-           * Whetehr a hover request for closing has been issued
+           * Whether a hover request for closing has been issued
            */
           _isHoverClosing: {
             type: Boolean,
@@ -385,6 +385,9 @@
        * Logic
        * *******************************************************************/
 
+      /**
+       * Hides and show items based on search text
+       */
       _filterOnSearch() {
 
         //fetch all dom items and make the search case insensitive
@@ -409,6 +412,9 @@
         this.$.ironDropdown.notifyResize();
       }
 
+      /**
+       * Computes and sets the `displayedValue` based on currently selected value
+       */
       _computeDisplayValue() {
 
         if(this.selectedValues) {
@@ -527,6 +533,10 @@
         this._updateSelectedValues();
       }
 
+
+      /**
+       * Rebuilds selectedValues when selection changes
+       */
       _updateSelectedValues() {
 
         //debounce call to batch updates
@@ -535,9 +545,11 @@
         Polymer.Async.timeOut.after(10),
         () => {
 
-        let result,
-            internalResult;
+          let result,
+              internalResult;
 
+          //get an array or just a single value depending
+          //on multi mode
           if(this.multi) {
             result = [];
             internalResult = [];
@@ -562,6 +574,9 @@
         });
       }
 
+      /**
+       * Returns the appropriate info for a data item based on `selectBy`
+       */
       _getInfoFromItem(item) {
 
         if(this.selectBy === 'item') {
@@ -578,7 +593,6 @@
       /**********************************************************************
        * Keyboard navigation
        * *******************************************************************/
-
 
       _handleKeyboardNav(evt) {
 
