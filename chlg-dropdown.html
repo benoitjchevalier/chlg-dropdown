@@ -543,9 +543,7 @@
             break;
           case 'Enter':
           case 'Space':
-            if(!this.opened) {
-              this.set('opened', true);
-            } else {
+            if(this.opened) {
               //select focused elem and close if needed
               this._selectElem(this._currentlyFocused);
               if(!this.multi) {
