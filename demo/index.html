@@ -90,17 +90,44 @@
         </div>
 
         <div class="container">
-          <h3>Select by item</h3>
-            <chlg-dropdown-demo
+          <h3>Interaction on hover</h3>
+            <chlg-dropdown
+              interaction-mode="hover"
+              items='[{"key":1, "value": "Polar Bear"},
+                      {"key": 2,"value":"Cat", "disabled": true},
+                      {"key":3, "value": "Dogs", "selected": true},
+                      {"key": 4, "value": "Koala"},
+                      {"key": 5, "value": "Rabbit"}]'>
+            </chlg-dropdown>
+        </div>
+    </div>
+
+    <div class="flex">
+      <div class="container">
+          <h3>Custom trigger</h3>
+            <chlg-dropdown
+              search-mode
+              items='[{"key":1, "value": "Polar Bear"},
+                      {"key": 2,"value":"Cat", "disabled": true},
+                      {"key":3, "value": "Dogs", "selected": true},
+                      {"key": 4, "value": "Koala"},
+                      {"key": 5, "value": "Rabbit"}]'>
+                <button slot="trigger" tabindex="-1">Custom external trigger</button>
+            </chlg-dropdown>
+        </div>
+
+        <div class="container">
+          <h3>Interaction on hover</h3>
+            <chlg-dropdown
               select-by="item"
               items='[{"key":1, "value": "Polar Bear"},
                       {"key": 2,"value":"Cat", "disabled": true},
                       {"key":3, "value": "Dogs", "selected": true},
                       {"key": 4, "value": "Koala"},
                       {"key": 5, "value": "Rabbit"}]'>
-            </chlg-dropdown-demo>
+            </chlg-dropdown>
         </div>
-    </div>
+      </div>
   </body>
   <script>
     window.addEventListener('WebComponentsReady', () => {

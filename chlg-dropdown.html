@@ -1,9 +1,11 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../polymer/lib/elements/dom-if.html">
 
 <link rel="import" href="../iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="font-awesome-set.html">
+<link rel="import" href="chlg-trigger.html">
 
 <link rel="import" href="css/chlg-dropdown-styles.html">
 
@@ -13,26 +15,31 @@
     <!-- import our compiled sass -->
     <style include="chlg-dropdown-styles"></style>
 
+     <!-- handle keyboard events for navigation -->
+     <iron-a11y-keys keys="up down space enter tab esc"
+     on-keys-pressed="_handleKeyboardNav"></iron-a11y-keys>
+
     <!-- Button trigger to open/close dropdown -->
-    <button
-      id="trigger"
-      class="dropdown-trigger"
-      on-tap="_handleTriggerTap"
-      on-mouseenter="_handleTriggerEnter"
-      aria-controls="dropdownContent"
-      aria-expanded="[[!opened]]"><span class="displayedValue">[[displayedValue]]</span><span class$="chevron [[_hideClass(hideChevron)]]"><iron-icon icon="fa:angle-down"></iron-icon></span></button>
-    <!-- handle keyboard events for navigation -->
-    <iron-a11y-keys keys="up down space enter tab esc"
-                    on-keys-pressed="_handleKeyboardNav"></iron-a11y-keys>
+    <slot id="triggerSlot" name="trigger" on-slotchange="_triggerSlotChanged">
+      <!-- default trigger. If people slot a custom trigger externally it will replace
+      this one automatically -->
+      <button
+        id="trigger"
+        class="dropdown-trigger"
+        aria-controls="dropdownContent"
+        aria-expanded="[[!opened]]"><span class="displayedValue">[[displayedValue]]</span><span class$="chevron [[_hideClass(hideChevron)]]"><iron-icon icon="fa:angle-down"></iron-icon></span></button>
+    </slot>
+
     <!-- iron dropdown will handle positioning of the menu based on the trigger and options -->
     <iron-dropdown
-      id="dropdown"
+      id="ironDropdown"
       dynamic-align
       no-overlap
+      position-target="[[_currentTrigger]]"
       opened="{{opened}}">
       <!-- actual dropdown menu -->
       <div id="dropdownContent"
-           aria-hidden="[[!opened]]"
+           aria-hidden$="[[!opened]]"
            slot="dropdown-content"
            class="dropdown-content">
         <!-- header slot for external custom content -->
@@ -90,22 +97,6 @@
           },
 
           /**
-           * Prevents the dropdown from opening on clicking the trigger
-           */
-          disableOpenOnClick: {
-            type: Boolean,
-            value: false
-          },
-
-          /**
-           * Allows the dropdown opening on hovering the trigger
-           */
-          openOnHover: {
-            type: Boolean,
-            value: false
-          },
-
-          /**
            * Allows the user to select several items in a dropdown. When enabled each item in the
            * dropdown will have a checkbox/tick indicating whether an item is currently selected.
            * Selecting an item won't close the dropdown to allow further selection
@@ -144,13 +135,6 @@
           selectBy: {
             type: String,
             value: 'value'
-          },
-
-          /**
-           * The trigger element for opening/closing the dropdown
-           */
-          _triggerElem: {
-            type: HTMLElement
           },
 
            /**
@@ -219,6 +203,23 @@
            */
           displayedValueCustom: {
             type: Function
+          },
+
+          /**
+           * The current dropdown trigger, either the default one or an external trigger
+           */
+           _currentTrigger: {
+            type: HTMLElement,
+            value: false
+          },
+
+          /**
+           * Defines how the user interact (open/close) the dropdown. Can be either 'click'
+           * or 'hover' (or anything else to manually handle opening and closing)
+           */
+          interactionMode: {
+            type: String,
+            value: 'click'
           }
         };
       }
@@ -228,31 +229,25 @@
           '_updateSelectedValues(items, items.*.selected)',
           '_filterOnSearch(_searchText)',
           '_computeDisplayValue(selectedValues, multi)',
-          '_openedChanged(opened)'
+          '_openedChanged(opened)',
+          '_setInteractions(interactionMode, _currentTrigger)'
           ];
       }
 
       ready() {
         super.ready();
 
-        //set the trigger element so we can position the dropdown relative to it
-        this._triggerElem = this.$.trigger;
+        //default to internal trigger
+        this._currentTrigger = this.$.trigger;
+
+        //add listener only once, no need to remove on disconnect as it's attached
+        //to a shadow dom elem: it won't prevent GC when the element is destroyed
+        this.$.ironDropdown.addEventListener('iron-overlay-canceled', this._handleCanceled.bind(this));
       }
 
       /************************************************************************
        * Input event handlers
        * *********************************************************************/
-      _handleTriggerTap() {
-        if(!this.disableOpenOnClick) {
-          this.set('opened', true);
-        }
-      }
-
-      _handleTriggerEnter() {
-        if(this.openOnHover && !this.opened) {
-          this.set('opened', true);
-        }
-      }
 
       _handleItemClick(evt) {
 
@@ -262,6 +257,32 @@
         this._currentlyFocused = evt.target;
 
         evt.preventDefault();
+      }
+
+      _setInteractions() {
+
+        if(this._currentTrigger && this.interactionMode) {
+
+          const open = (e) => {
+                this.set('opened', true);
+              },
+              close = (e) => {
+                this.set('opened', false);
+              },
+              toggle = (e) => {
+                this.set('opened', !this.opened);
+              }
+
+          //add interaction based on the mode
+          if(this.interactionMode === 'click') {
+
+            this._currentTrigger.addEventListener('tap', toggle);
+
+          } else if(this.interactionMode === 'hover') {
+            this._currentTrigger.addEventListener('mouseenter', open);
+            this.$.dropdownContent.addEventListener('mouseout', close);
+          }
+        }
       }
 
       /**********************************************************************
@@ -303,6 +324,15 @@
           });
       }
 
+      _triggerSlotChanged(evt) {
+        let nodes = this.$.triggerSlot.assignedNodes();
+
+        //use the element that has been given to us as the new trigger
+        if(nodes.length) {
+          this.set('_currentTrigger', nodes[0]);
+        }
+      }
+
       /**********************************************************************
        * Logic
        * *******************************************************************/
@@ -328,7 +358,7 @@
 
         //the content might have changed size, ensure the menu is
         //positioned correctly
-        this.$.dropdown.notifyResize();
+        this.$.ironDropdown.notifyResize();
       }
 
       _computeDisplayValue() {
@@ -356,6 +386,17 @@
           this.set('displayedValue', result);
         } else {
           this.set('displayedValue', this.defaultDisplayedValue);
+        }
+      }
+
+      _handleCanceled(evt) {
+
+        //by default iron dropdown will close the dropdown on any click
+        //outside of it. In our case we want to prevent that behavior
+        //when clicking the trigger in order to manually decide whether to open
+        //or close
+        if(evt.detail.path.indexOf(this._currentTrigger) !== -1) {
+          evt.preventDefault();
         }
       }
 
