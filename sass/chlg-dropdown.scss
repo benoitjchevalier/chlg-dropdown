@@ -1,35 +1,77 @@
+$font: var(--chlg-dropdown-font, 16pt "Arial");
+$item-horizontal-padding: 5px;
+$item-height: 40px;
+$focus-ring-margin: 3px;
 
 :host {
-    display: block;
+  display: block;
+  font: $font;
+}
+
+.dropdown-trigger {
+  border-radius: 4px;
+  min-height: $item-height;
+  padding-left: 15px;
+  padding-right: 15px;
+  cursor: pointer;
+  font: $font;
+  border: 1px solid var(--chlg-dropdown-border-color, #ACACAC);
+  background-color: var(--chlg-dropdown-trigger-bg-color, #EEEEEE);
+  &:hover {
+    background-color: var(--chlg-dropdown-trigger-bg-color-hover, #D4D4D4);
+  }
+  &:active {
+    background-color: var(--chlg-dropdown-trigger-bg-color-pressed, #BDBDBD);
+  }
+}
+
+.chevron {
+  margin-left: 5px;
 }
 
 .dropdown-content {
-  border: 1px black solid;
-  background-color: var(--chlg-dropdown-background-color, white);
-  padding: 5px;
+  border: 1px solid var(--chlg-dropdown-border-color, #ACACAC);;
+  background-color: var(--chlg-dropdown-content-bg-color, #FFFFFF);
 }
 
 .item {
-  padding-left: var(--chlg-dropdown-content-padding, 5px);
-  padding-right: var(--chlg-dropdown-content-padding, 5px);
+  // margin-left: $item-horizontal-padding;
+  // margin-right: $item-horizontal-padding;
+  display: flex;
+  align-items: center;
+  // margin-top: $focus-ring-margin;
+  // margin-bottom: $focus-ring-margin;
+  height: $item-height ;
+  padding-left: $item-horizontal-padding;
+  padding-right: $item-horizontal-padding;
+  border: 2px solid transparent;
   cursor: pointer;
   &:hover {
-    background-color: var(--chlg-dropdown-bg-color--hover, lightgray);
+    background-color: var(--chlg-dropdown-bg-color--hover, #A3DDF9);
   }
   &.selected {
-    background-color: var(--chlg-dropdown-bg-color--selected, blue);
+    background-color: var(--chlg-dropdown-bg-color--selected, #2E97C9);
     color: var(--chlg-dropdown-text-color--selected, white);
   }
   &.disabled {
-    color: var(--chlg-dropdown-text-color--disabled, gray);
+    color: var(--chlg-dropdown-text-color--disabled,#B8B8B8);
     background-color: var(--chlg-dropdown-bg-color--disabled, transparent);
     cursor: not-allowed;
   }
+  &:focus {
+    outline: none;
+    border: 2px solid var(--chlg-drodpdown-focus-border-color, #000000);
+  }
+}
+
+#search {
+  font: $font;
+  margin: 10px;
 }
 
 .tick {
     display: inline-block;
-    width: 12px;
+    width: 16px;
 }
 
 .hidden {
@@ -38,5 +80,4 @@
 
 .icon {
   --iron-icon-width: 12px;
-  --iron-icon-height: 12px;
 }

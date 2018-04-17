@@ -16,10 +16,11 @@
     <!-- Button trigger to open/close dropdown -->
     <button
       id="trigger"
+      class="dropdown-trigger"
       on-tap="_handleTriggerTap"
       on-mouseenter="_handleTriggerEnter"
       aria-controls="dropdownContent"
-      aria-expanded="[[!opened]]">[[displayedValue]]</button>
+      aria-expanded="[[!opened]]">[[displayedValue]]<span class$="chevron [[_hideClass(hideChevron)]]"><iron-icon class="icon" icon="fa:angle-down"></iron-icon></span></button>
     <!-- handle keyboard events for navigation -->
     <iron-a11y-keys keys="up down space enter tab esc"
                     on-keys-pressed="_handleKeyboardNav"></iron-a11y-keys>
@@ -41,6 +42,7 @@
           id="search"
           class$="[[_showClass(searchMode)]]"
           autocomplete="off"
+          placeholder="Search"
           value="{{_searchText::input}}">
         <!-- list of items -->
         <template id="menuTemplate" is="dom-repeat" items="[[items]]">
@@ -160,6 +162,14 @@
           },
 
           /**
+           * Flag to hide the chevron on the default dropdown trigger
+           */
+          hideChevron: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
            * The string input by the user when searching
            */
           _searchText: {
@@ -185,8 +195,16 @@
            * The text displayed in the trigger element, based on what values are selected. Can be set as well
            */
           displayedValue: {
+            type: String
+          },
+
+          /**
+           * The text to display in the trigger element, if no values are
+           * selected
+           */
+          defaultDisplayedValue: {
             type: String,
-            value: 'Test'
+            value: 'Select'
           },
 
           /**
@@ -331,15 +349,22 @@
           // - join all values in multi
           // - display the value in single
 
-          let values = this.multi ? this._selectedItems.map( i => i.value) : this._selectedItems.value;
+          let values = this.multi ? this._selectedItems.map( i => i.value) : this._selectedItems.value,
+              result = values;
 
           if(this.displayedValueCustom) {
-            this.set('displayedValue', this.displayedValueCustom(this.selectedValues, values).bind(this));
+            result = this.displayedValueCustom(this.selectedValues, values).bind(this);
           } else if(this.multi) {
-            this.set('displayedValue', values.join(', '));
-          } else {
-            this.set('displayedValue', values);
+            result = values.join(', ');
           }
+
+          if(!result) {
+            result = this.defaultDisplayedValue;
+          }
+
+          this.set('displayedValue', result);
+        } else {
+          this.set('displayedValue', this.defaultDisplayedValue);
         }
       }
 
@@ -353,8 +378,11 @@
           this._searchText = '';
         } else {
 
-          //focus first item
-          this._changeItemFocus(true);
+          //focus first item. Put the call on top of the stack
+          //to let the browser process the eventual native focus
+          //of an event kicking this opening, and then refocus where
+          //we want
+          window.setTimeout(() => {this._changeItemFocus(true)}, 0);
         }
       }
 
