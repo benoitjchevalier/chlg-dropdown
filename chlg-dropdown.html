@@ -5,7 +5,6 @@
 <link rel="import" href="../iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="font-awesome-set.html">
-<link rel="import" href="chlg-trigger.html">
 
 <link rel="import" href="css/chlg-dropdown-styles.html">
 
@@ -47,7 +46,7 @@
         <!-- search input if needed -->
         <input
           id="search"
-          class$="[[_showClass(searchMode)]]"
+          class$="[[_showClass(search)]]"
           autocomplete="off"
           placeholder="Search"
           value="{{_searchText::input}}">
@@ -148,7 +147,7 @@
            /**
            * When enabled adds an input above the first dropdown item to allow searching based on items values
            */
-          searchMode: {
+          search: {
             type: Boolean,
             value: false
           },

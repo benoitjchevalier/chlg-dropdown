@@ -588,11 +588,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 92,
+              "line": 100,
               "column": 10
             },
             "end": {
-              "line": 96,
+              "line": 104,
               "column": 11
             }
           },
@@ -610,11 +610,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 103,
+              "line": 111,
               "column": 10
             },
             "end": {
-              "line": 106,
+              "line": 114,
               "column": 11
             }
           },
@@ -630,11 +630,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 116,
+              "line": 124,
               "column": 10
             },
             "end": {
-              "line": 119,
+              "line": 127,
               "column": 11
             }
           },
@@ -651,11 +651,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 124,
+              "line": 132,
               "column": 10
             },
             "end": {
-              "line": 126,
+              "line": 134,
               "column": 11
             }
           },
@@ -670,11 +670,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 134,
+              "line": 142,
               "column": 10
             },
             "end": {
-              "line": 137,
+              "line": 145,
               "column": 11
             }
           },
@@ -687,26 +687,6 @@
           "name": "searchMode",
           "type": "boolean",
           "description": "When enabled adds an input above the first dropdown item to allow searching based on items values",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 142,
-              "column": 10
-            },
-            "end": {
-              "line": 145,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "false"
-        },
-        {
-          "name": "hideChevron",
-          "type": "boolean",
-          "description": "Flag to hide the chevron on the default dropdown trigger",
           "privacy": "public",
           "sourceRange": {
             "start": {
@@ -724,10 +704,10 @@
           "defaultValue": "false"
         },
         {
-          "name": "_searchText",
-          "type": "string",
-          "description": "The string input by the user when searching",
-          "privacy": "protected",
+          "name": "hideChevron",
+          "type": "boolean",
+          "description": "Flag to hide the chevron on the default dropdown trigger",
+          "privacy": "public",
           "sourceRange": {
             "start": {
               "line": 158,
@@ -735,6 +715,26 @@
             },
             "end": {
               "line": 161,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "_searchText",
+          "type": "string",
+          "description": "The string input by the user when searching",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 166,
+              "column": 10
+            },
+            "end": {
+              "line": 169,
               "column": 11
             }
           },
@@ -750,11 +750,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 166,
+              "line": 174,
               "column": 10
             },
             "end": {
-              "line": 168,
+              "line": 176,
               "column": 11
             }
           },
@@ -765,15 +765,15 @@
         {
           "name": "items",
           "type": "Array",
-          "description": "",
+          "description": "Items to be displayed in the dropdown. Each item is an object that can have\nthe following properties:\n- key (mandatory): unique key for this item\n- value (mandatory): value to display for this item\n- selected: whether this item should be selected. When a user selects an item\nit will be appropriately reflected in the `items` array\n- disabled: whether this item should be disabled (different look and can't be\nselected)",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 170,
+              "line": 188,
               "column": 10
             },
             "end": {
-              "line": 175,
+              "line": 193,
               "column": 11
             }
           },
@@ -789,11 +789,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 180,
+              "line": 198,
               "column": 10
             },
             "end": {
-              "line": 182,
+              "line": 200,
               "column": 11
             }
           },
@@ -808,11 +808,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 188,
+              "line": 206,
               "column": 10
             },
             "end": {
-              "line": 191,
+              "line": 209,
               "column": 11
             }
           },
@@ -828,11 +828,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 203,
+              "line": 221,
               "column": 10
             },
             "end": {
-              "line": 205,
+              "line": 223,
               "column": 11
             }
           },
@@ -847,11 +847,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 210,
+              "line": 228,
               "column": 11
             },
             "end": {
-              "line": 213,
+              "line": 231,
               "column": 11
             }
           },
@@ -867,11 +867,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 219,
+              "line": 237,
               "column": 10
             },
             "end": {
-              "line": 222,
+              "line": 240,
               "column": 11
             }
           },
@@ -887,11 +887,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 228,
+              "line": 246,
               "column": 10
             },
             "end": {
-              "line": 231,
+              "line": 249,
               "column": 11
             }
           },
@@ -907,11 +907,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 236,
+              "line": 254,
               "column": 10
             },
             "end": {
-              "line": 239,
+              "line": 257,
               "column": 11
             }
           },
@@ -927,11 +927,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 244,
+              "line": 262,
               "column": 10
             },
             "end": {
-              "line": 247,
+              "line": 265,
               "column": 11
             }
           },
@@ -1188,11 +1188,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 261,
+              "line": 279,
               "column": 6
             },
             "end": {
-              "line": 270,
+              "line": 288,
               "column": 7
             }
           },
@@ -3109,11 +3109,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 276,
+              "line": 294,
               "column": 6
             },
             "end": {
-              "line": 284,
+              "line": 302,
               "column": 7
             }
           },
@@ -3130,11 +3130,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 286,
+              "line": 304,
               "column": 6
             },
             "end": {
-              "line": 305,
+              "line": 323,
               "column": 7
             }
           },
@@ -3147,11 +3147,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 311,
+              "line": 329,
               "column": 6
             },
             "end": {
-              "line": 323,
+              "line": 341,
               "column": 7
             }
           },
@@ -3168,11 +3168,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 325,
+              "line": 343,
               "column": 6
             },
             "end": {
-              "line": 333,
+              "line": 351,
               "column": 7
             }
           },
@@ -3189,11 +3189,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 339,
+              "line": 357,
               "column": 6
             },
             "end": {
-              "line": 341,
+              "line": 359,
               "column": 7
             }
           },
@@ -3213,11 +3213,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 343,
+              "line": 361,
               "column": 6
             },
             "end": {
-              "line": 354,
+              "line": 372,
               "column": 7
             }
           },
@@ -3240,11 +3240,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 356,
+              "line": 374,
               "column": 6
             },
             "end": {
-              "line": 358,
+              "line": 376,
               "column": 7
             }
           },
@@ -3261,11 +3261,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 360,
+              "line": 378,
               "column": 6
             },
             "end": {
-              "line": 362,
+              "line": 380,
               "column": 7
             }
           },
@@ -3282,11 +3282,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 368,
+              "line": 386,
               "column": 6
             },
             "end": {
-              "line": 372,
+              "line": 390,
               "column": 7
             }
           },
@@ -3299,11 +3299,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 374,
+              "line": 392,
               "column": 6
             },
             "end": {
-              "line": 381,
+              "line": 399,
               "column": 7
             }
           },
@@ -3320,11 +3320,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 390,
+              "line": 408,
               "column": 6
             },
             "end": {
-              "line": 412,
+              "line": 430,
               "column": 7
             }
           },
@@ -3337,11 +3337,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 417,
+              "line": 435,
               "column": 6
             },
             "end": {
-              "line": 446,
+              "line": 464,
               "column": 7
             }
           },
@@ -3354,11 +3354,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 448,
+              "line": 466,
               "column": 6
             },
             "end": {
-              "line": 457,
+              "line": 475,
               "column": 7
             }
           },
@@ -3375,11 +3375,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 463,
+              "line": 481,
               "column": 6
             },
             "end": {
-              "line": 479,
+              "line": 497,
               "column": 7
             }
           },
@@ -3392,11 +3392,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 485,
+              "line": 503,
               "column": 6
             },
             "end": {
-              "line": 510,
+              "line": 528,
               "column": 7
             }
           },
@@ -3413,11 +3413,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 515,
+              "line": 533,
               "column": 6
             },
             "end": {
-              "line": 533,
+              "line": 551,
               "column": 7
             }
           },
@@ -3437,11 +3437,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 539,
+              "line": 557,
               "column": 6
             },
             "end": {
-              "line": 574,
+              "line": 592,
               "column": 7
             }
           },
@@ -3454,11 +3454,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 579,
+              "line": 597,
               "column": 6
             },
             "end": {
-              "line": 590,
+              "line": 608,
               "column": 7
             }
           },
@@ -3475,11 +3475,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 596,
+              "line": 614,
               "column": 6
             },
             "end": {
-              "line": 631,
+              "line": 649,
               "column": 7
             }
           },
@@ -3496,11 +3496,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 637,
+              "line": 655,
               "column": 6
             },
             "end": {
-              "line": 656,
+              "line": 674,
               "column": 7
             }
           },
@@ -3517,11 +3517,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 658,
+              "line": 676,
               "column": 6
             },
             "end": {
-              "line": 683,
+              "line": 701,
               "column": 7
             }
           },
@@ -4487,7 +4487,7 @@
           "column": 4
         },
         "end": {
-          "line": 684,
+          "line": 702,
           "column": 5
         }
       },
@@ -4500,11 +4500,11 @@
           "description": "A flag which reflects/sets the states of the dropdown: menu opened or closed",
           "sourceRange": {
             "start": {
-              "line": 92,
+              "line": 100,
               "column": 10
             },
             "end": {
-              "line": 96,
+              "line": 104,
               "column": 11
             }
           },
@@ -4516,11 +4516,11 @@
           "description": "Allows the user to select several items in a dropdown. When enabled each item in the\ndropdown will have a checkbox/tick indicating whether an item is currently selected.\nSelecting an item won't close the dropdown to allow further selection",
           "sourceRange": {
             "start": {
-              "line": 103,
+              "line": 111,
               "column": 10
             },
             "end": {
-              "line": 106,
+              "line": 114,
               "column": 11
             }
           },
@@ -4532,11 +4532,11 @@
           "description": "represents the value(s) currently selected. Based on `selectBy` it's either :\n- an item value\n- an item key\n- a complete item\n\nif `multi` is on then this will be an array rather than a single value",
           "sourceRange": {
             "start": {
-              "line": 116,
+              "line": 124,
               "column": 10
             },
             "end": {
-              "line": 119,
+              "line": 127,
               "column": 11
             }
           },
@@ -4548,22 +4548,6 @@
           "description": "Drives what is reflected in `selectedValues`. Can be either:\n- 'value'\n- 'key'\n- 'item'",
           "sourceRange": {
             "start": {
-              "line": 134,
-              "column": 10
-            },
-            "end": {
-              "line": 137,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "string"
-        },
-        {
-          "name": "search-mode",
-          "description": "When enabled adds an input above the first dropdown item to allow searching based on items values",
-          "sourceRange": {
-            "start": {
               "line": 142,
               "column": 10
             },
@@ -4573,11 +4557,11 @@
             }
           },
           "metadata": {},
-          "type": "boolean"
+          "type": "string"
         },
         {
-          "name": "hide-chevron",
-          "description": "Flag to hide the chevron on the default dropdown trigger",
+          "name": "search-mode",
+          "description": "When enabled adds an input above the first dropdown item to allow searching based on items values",
           "sourceRange": {
             "start": {
               "line": 150,
@@ -4592,15 +4576,31 @@
           "type": "boolean"
         },
         {
-          "name": "items",
-          "description": "",
+          "name": "hide-chevron",
+          "description": "Flag to hide the chevron on the default dropdown trigger",
           "sourceRange": {
             "start": {
-              "line": 170,
+              "line": 158,
               "column": 10
             },
             "end": {
-              "line": 175,
+              "line": 161,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "items",
+          "description": "Items to be displayed in the dropdown. Each item is an object that can have\nthe following properties:\n- key (mandatory): unique key for this item\n- value (mandatory): value to display for this item\n- selected: whether this item should be selected. When a user selects an item\nit will be appropriately reflected in the `items` array\n- disabled: whether this item should be disabled (different look and can't be\nselected)",
+          "sourceRange": {
+            "start": {
+              "line": 188,
+              "column": 10
+            },
+            "end": {
+              "line": 193,
               "column": 11
             }
           },
@@ -4612,11 +4612,11 @@
           "description": "The text displayed in the trigger element, based on what values are selected. Can be set as well",
           "sourceRange": {
             "start": {
-              "line": 180,
+              "line": 198,
               "column": 10
             },
             "end": {
-              "line": 182,
+              "line": 200,
               "column": 11
             }
           },
@@ -4628,11 +4628,11 @@
           "description": "The text to display in the trigger element, if no values are\nselected",
           "sourceRange": {
             "start": {
-              "line": 188,
+              "line": 206,
               "column": 10
             },
             "end": {
-              "line": 191,
+              "line": 209,
               "column": 11
             }
           },
@@ -4644,11 +4644,11 @@
           "description": "allows to customize the displayed value. If defined this function\nwill be called every time `displayValue` should change. It should\nreturn the desired `displayValue`.\nIt will be run in the context of the dropdown and will have two\narguments:\n- `selectedValues`: same property as the one oin the dropdown\n- `value`: represent the selected values, \"by value\". Will\n  be either a string or an array depending on `multi`",
           "sourceRange": {
             "start": {
-              "line": 203,
+              "line": 221,
               "column": 10
             },
             "end": {
-              "line": 205,
+              "line": 223,
               "column": 11
             }
           },
@@ -4660,11 +4660,11 @@
           "description": "Defines how the user interact (open/close) the dropdown. Can be either 'click'\nor 'hover' (or anything else to manually handle opening and closing)",
           "sourceRange": {
             "start": {
-              "line": 219,
+              "line": 237,
               "column": 10
             },
             "end": {
-              "line": 222,
+              "line": 240,
               "column": 11
             }
           },
@@ -4673,6 +4673,12 @@
         }
       ],
       "events": [
+        {
+          "type": "CustomEvent",
+          "name": "chlg-dropdown-item-selected",
+          "description": "chlg-dropdown-item-selected",
+          "metadata": {}
+        },
         {
           "type": "CustomEvent",
           "name": "opened-changed",
