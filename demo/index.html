@@ -17,6 +17,7 @@
       body {
         font-family: "GE Inspira Sans";
         font-size: 15px;
+        font-weight: 400;
       }
       .page {
         justify-content: center;
@@ -45,6 +46,11 @@
         <p>asiyfhsdhgkidhgusdhg dsihjgsdlkj gklsdjgk s sdkgf jsdlkfjskldjfklsjdkfjs jsildjg sdligjslidhg kljdsglk sjdklg jsldkjg lksdjf lksdjfkl sjdlkfjslkd jflksdj flks</p>
         <h2>Initial Considerations</h2>
         <h2>Basic Dropdown</h2>
+
+        <h2>Styling</h2>
+        <p>The dropdown is currently styled using sass and css variables. The css variables allow flexibility: they could be used in a theme where theme file would define those variables to what the dropdown should look like, allowing for applying different themes easily. They also allow custom external override, giving flexibility for external developers to style the dropdown as well as override a potential theme. This can be useful for styling dropdowns differently based on their use (navigation vs selection for example). Please see the <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html">the API</a> for a list of the currently available css variables. More variables can be added for finer granular control of the styling.</p>
+        <p>The default style makes use of the different state of the trigger: hovered, pressed and normal. The dropdown items use different shades of blue to represent selection and hover, allowing distinction by color blind people. Focus on an item, useful for keyboard navigation, is represented by a black border.</p>
+
         <h2>Interaction</h2>
         <h3>Interaction Mode</h3>
         <h3>Keyboard Navigation</h3>

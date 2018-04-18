@@ -20,10 +20,10 @@ $focus-ring-margin: 3px;
   border: 1px solid var(--chlg-dropdown-border-color, #ACACAC);
   background-color: var(--chlg-dropdown-trigger-bg-color, #EEEEEE);
   &:hover {
-    background-color: var(--chlg-dropdown-trigger-bg-color-hover, #D4D4D4);
+    background-color: var(--chlg-dropdown-trigger-bg-color--hover, #D4D4D4);
   }
   &:active {
-    background-color: var(--chlg-dropdown-trigger-bg-color-pressed, #BDBDBD);
+    background-color: var(--chlg-dropdown-trigger-bg-color--pressed, #BDBDBD);
   }
 }
 
@@ -32,32 +32,30 @@ $focus-ring-margin: 3px;
 }
 
 .dropdown-content {
-  border: 1px solid var(--chlg-dropdown-border-color, #ACACAC);;
+  border: 1px solid var(--chlg-dropdown-border-color, #ACACAC);
   background-color: var(--chlg-dropdown-content-bg-color, #FFFFFF);
+  color: var(--chlg-dropdown-content-color, #000000);
 }
 
 .item {
-  // margin-left: $item-horizontal-padding;
-  // margin-right: $item-horizontal-padding;
   display: flex;
   align-items: center;
-  // margin-top: $focus-ring-margin;
-  // margin-bottom: $focus-ring-margin;
   height: $item-height ;
   padding-left: $item-horizontal-padding;
   padding-right: $item-horizontal-padding;
   border: 2px solid transparent;
   cursor: pointer;
   &:hover {
-    background-color: var(--chlg-dropdown-bg-color--hover, #A3DDF9);
+    background-color: var(--chlg-dropdown-item-bg-color--hover, #A3DDF9);
+    color: var(--chlg-dropdown-text-color--hover, #000000);
   }
   &.selected {
-    background-color: var(--chlg-dropdown-bg-color--selected, #2E97C9);
+    background-color: var(--chlg-dropdown-item-bg-color--selected, #2E97C9);
     color: var(--chlg-dropdown-text-color--selected, white);
   }
   &.disabled {
     color: var(--chlg-dropdown-text-color--disabled,#B8B8B8);
-    background-color: var(--chlg-dropdown-bg-color--disabled, transparent);
+    background-color: var(--chlg-dropdown-item-bg-color--disabled, transparent);
     cursor: not-allowed;
   }
   &:focus {
