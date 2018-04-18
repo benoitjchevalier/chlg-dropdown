@@ -28,13 +28,19 @@
         max-width: 1200px;
       }
       .container {
-        flex: 1;
-        border: 1px solid grey;
-        min-width: 300px;
-        height: 150px;
+        display: flex;
+        justify-content: space-evenly;
+        border: 1px solid #ACACAC;
+        padding: 10px;
+      }
+      .align {
+        justify-content: space-evenly;
       }
       .flex {
         display: flex;
+      }
+      .flex--col {
+        flex-flow: column;
       }
     </style>
   </head>
@@ -52,10 +58,57 @@
         <p>The default style makes use of the different state of the trigger: hovered, pressed and normal. The dropdown items use different shades of blue to represent selection and hover, allowing distinction by color blind people. Focus on an item, useful for keyboard navigation, is represented by a black border.</p>
 
         <h2>Interaction</h2>
+        <p>The dropdown can use three different types of interaction based on the "interactionMode" property:</p>
+        <ul>
+          <li>Click (default): the menu will be opened when clicking on the trigger. It will be closed when clicking on the trigger again, or anywhere outside of the menu. When clicking an item the menu will close if in "single" mode and will stay open for further selection if in "multi" mode.</li>
+          <li>Hover: the menu will open when hovering the trigger and close when the mouse gets out of the trigger or menu. It will also close when selecting an item in a similar way as "Click".</li>
+          <li>None: no opening behavior will be provided, but the dropdown will still close on outside click. It gives full control to the external developper for custom behaviors.</li>
+        </ul>
+        <p>Please note that this only impacts mouse behavior but keyboard navigation will always be available.</p>
+
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Click</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Hover</h4>
+            <chlg-dropdown interaction-mode="hover" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>None</h4>
+            <chlg-dropdown interaction-mode="none" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+        </div>
+
+
+        <h2>Custom Trigger</h2>
+        <p>By default the dropdown has its own trigger, which is the visible component the user will interact with in order to open/close the window. The trigger will also try to reflect the current selection in the dropdown. It can be styled through css variables and configured to some extents: the chevron can be hidden and a custom function can be passed to decide what text the trigger should display based on currently selected values.</p>
+        <p>However if that is not enough a custom trigger can be passed in through the slot API, allowing an external developper to take full control of the trigger appearance and behavior. By default the custom trigger will still try to use the default interaction based on the "interactionMode" property.</p>
+
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Default trigger</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Custom trigger, just a salmon div</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+              <div slot="trigger" style="background-color:salmon">I like salmon</div>
+            </chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Custom trigger and hover mode</h4>
+            <chlg-dropdown interaction-mode="hover" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+              <div slot="trigger" style="background-color:salmon">I like salmon</div>
+            </chlg-dropdown>
+          </div>
+        </div>
+
         <h3>Interaction Mode</h3>
         <h3>Keyboard Navigation</h3>
         <h2>Accessibility</h2>
-        <h2>Custom Trigger</h2>
+
         <h2>Multi Mode</h2>
         <h2>Search Mode</h2>
 
