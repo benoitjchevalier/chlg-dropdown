@@ -56,6 +56,9 @@ Custom property | Description
       id="ironDropdown"
       dynamic-align
       no-overlap
+      restore-focus-on-close
+      horizontal-align="[[horizontalAlign]]"
+      vertical-align="[[verticalAlign]]"
       position-target="[[_currentTrigger]]"
       opened="{{opened}}">
       <!-- actual dropdown menu -->
@@ -259,6 +262,30 @@ Custom property | Description
           interactionMode: {
             type: String,
             value: 'click'
+          },
+
+          /**
+           * The orientation against which to align the dropdown content horizontally relative to the dropdown trigger. 
+           * - left
+           * - right
+           * - center
+           * - auto
+           */
+          horizontalAlign: {
+            type: String,
+            value: 'left'
+          },
+
+          /**
+           * The orientation against which to align the dropdown content vertically relative to the dropdown trigger. 
+           * - top
+           * - bottom
+           * - middle
+           * - auto
+           */
+          verticalAlign: {
+            type: String,
+            value: 'top'
           },
 
           /**
@@ -719,6 +746,15 @@ Custom property | Description
           }
 
           return toSelect;
+        }
+      }
+
+      /**
+       * Gives focus to the dropdown, effectively to its trigger
+       */
+      focus() {
+        if(this._currentTrigger) {
+          this._currentTrigger.focus();
         }
       }
     }

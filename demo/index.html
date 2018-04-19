@@ -49,14 +49,38 @@
     <div class="flex page">
       <div class="main">
         <h1>Challenge dropdown: thoughts, examples and how to</h1>
-        <p>asiyfhsdhgkidhgusdhg dsihjgsdlkj gklsdjgk s sdkgf jsdlkfjskldjfklsjdkfjs jsildjg sdligjslidhg kljdsglk sjdklg jsldkjg lksdjf lksdjfkl sjdlkfjslkd jflksdj flks</p>
-        <h2>Initial Considerations</h2>
-        <p>Polymer + iron-dropdown</p>
-        <h2>Basic Dropdown</h2>
+
+        <h2>Initial considerations and choices</h2>
+        <p>Given the requirements the dropdown has to be built as a reusable component, which can be done in a number of different way given the current state of the javascript front-end world (Angular, React, Polymer, Vue...). I've chosen Polymer for its interoperability as well as the fact that this is the library and ecosystem I'm the most familiar with, allowing me to efficiently build the component as well as the documentation.</p>
+        <p>The dropdown uses two external component:</p>
+        <ul>
+          <li><a href="https://www.webcomponents.org/element/PolymerElements/iron-dropdown/elements/iron-dropdown">iron-dropdown</a> which is a low level component provided by the Polymer team allowing positioning of an item relative to an other and showing/hiding this item. This solves common problem such as repositioning a menu when outside of the window, chosing alignment, etc...</li>
+          <li><a href="https://www.webcomponents.org/element/PolymerElements/iron-a11y-keys">iron-a11y-keys</a> is a wrapper around keyboard press events, making it easier to organize the code when listening to keyboard events.</li>
+        </ul>
+        <p>I haven't chosen those two components to "cut corners" but those are the decisions I would have made if genuinely building this dropdown as part of an app or design system. Iron-dropdown solves a common problem of positioning an item with a lot of flexibility and configuration options which can be exposed to the end developer. I have worked with it and know it's reliable and work well in these kind of scenarios, don't reinvent the wheel if you dont have to. This allows more focus on differentiating features.</p>
+        <p>The <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html">API page</a> has been built directly from the code. Each property, methods, event and css variables are commented in the code. Polymer CLI then allows for parsing the file and extracting the information into a JSON file. This file can then be consumed, in this case by an iron-component-page component but this could be a custom component for a Design System, to produce a documentation/API page.</p>
 
         <h2>Styling</h2>
         <p>The dropdown is currently styled using sass and css variables. The css variables allow flexibility: they could be used in a theme where theme file would define those variables to what the dropdown should look like, allowing for applying different themes easily. They also allow custom external override, giving flexibility for external developers to style the dropdown as well as override a potential theme. This can be useful for styling dropdowns differently based on their use (navigation vs selection for example). Please see the <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html">the API</a> for a list of the currently available css variables. More variables can be added for finer granular control of the styling.</p>
         <p>The default style makes use of the different state of the trigger: hovered, pressed and normal. The dropdown items use different shades of blue to represent selection and hover, allowing distinction by color blind people. Focus on an item, useful for keyboard navigation, is represented by a black border.</p>
+
+        <h2>Dropdown positioning</h2>
+        <p>As mentioned above the dropdown menu position, relative to its trigger, can be configured through iron-dropdown. verticalAlign and horizontalAlign will tried to be matched, but if the dropdown is cropped then other values might be chosen (you can try by resizing the browser so that the trigger is just above the bottom of the browser. In that configuration the dropdown will open on the side/up even if it is configured to open on the bottom)</p>
+
+        <div class="container">
+            <div class="flex flex--col">
+              <h4>Default, bottom left</h4>
+              <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+            </div>
+            <div class="flex flex--col">
+              <h4>Top right</h4>
+              <chlg-dropdown horizontal-align="right" vertical-align="bottom" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+            </div>
+            <div class="flex flex--col">
+              <h4>Middle right</h4>
+              <chlg-dropdown horizontal-align="left" vertical-align="middle" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+            </div>
+          </div>
 
         <h2>Mouse Interaction</h2>
         <p>The dropdown can use three different types of mouse interaction based on the "interactionMode" property:</p>
@@ -109,12 +133,10 @@
         <h2>Accessibility</h2>
         <p>The dropdown has been designed with accessibility in mind. The color scheme allows color blind people to differentiate between different state. Keyboard navigation is available: when the trigger is focused the dropdown can be opened with Space and Enter. The first item is focused and focus can be changed with Up and Down. Selection can be made with Space/Enter and the dropdown can be closed with Esc.</p>
         <p>The dropdown also follows WAI-ARIA principles, ensuring the browser knows the trigger controls a menu and dynamically letting it know what is hidden and visible through aria-hidden.</p>
-
+        <p>The dropdown also has a focus() function which will focus its trigger, allowing external developers to handle custom focus behavior in their app.</p>
+        <h4>Click to give focus to the dropdown and start keyboard navigation (or use tab)</h4>
+        <button id="focus">Focus</button>
         <div class="container">
-          <div class="flex flex--col">
-            <h4>Click to give focus to the dropdown and start keyboard navigation</h4>
-            <button id="focus">Focus</button>
-          </div>
           <div class="flex flex--col">
             <h4>Try keyboard navigation</h4>
             <chlg-dropdown id="toFocus" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
@@ -130,7 +152,7 @@
     </div>
 
 
-    
+
   </body>
   <script>
     window.addEventListener('WebComponentsReady', () => {
