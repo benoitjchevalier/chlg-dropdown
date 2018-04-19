@@ -1,0 +1,764 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../polymer/lib/elements/dom-if.html">
+
+<link rel="import" href="../iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="font-awesome-set.html">
+
+<link rel="import" href="css/chlg-dropdown-styles.html">
+
+<!--
+
+### Styling
+
+The following css variables are available for styling the dropdown
+
+Custom property | Description
+:----------------|:-------------
+`--chlg-dropdown-trigger-max-width` | Max width for the dropdown trigger
+`--chlg-dropdown-trigger-bg-color` | Background color for the trigger in its normal state
+`--chlg-dropdown-trigger-bg-color--hover` | Background color for the trigger when hovered
+`--chlg-dropdown-trigger-bg-color--pressed` | Background color for the trigger when pressed
+`--chlg-dropdown-border-color` | Border color for both the trigger and the menu
+`--chlg-dropdown-content-bg-color` | Background color for the content menu
+`--chlg-dropdown-content-color` | Text color for the drodpown content
+`--chlg-dropdown-item-bg-color--hover` | Background color for an hovered menu item
+`--chlg-dropdown-text-color--hover` | Text color for an hovered menu item
+`--chlg-dropdown-item-bg-color--selected` | Background color for a selected menu item
+`--chlg-dropdown-text-color--selected` | Text color for an hovered menu item
+`--chlg-dropdown-item-bg-color--disabled` | Background color for a disabled menu item
+`--chlg-dropdown-text-color--disabled` | Text color for an hovered menu item
+`--chlg-drodpdown-focus-border-color` | Color of the focus border used for keyboard navigation
+ -->
+<dom-module id="chlg-dropdown">
+  <template>
+    <!-- import our compiled sass -->
+    <style include="chlg-dropdown-styles"></style>
+
+     <!-- handle keyboard events for navigation -->
+     <iron-a11y-keys keys="up down space enter tab esc"
+     on-keys-pressed="_handleKeyboardNav"></iron-a11y-keys>
+
+    <!-- trigger to open/close dropdown -->
+    <slot id="triggerSlot" name="trigger" on-slotchange="_triggerSlotChanged">
+      <!-- default trigger. If people slot a custom trigger externally it will replace
+      this one automatically -->
+      <button
+        id="trigger"
+        class="dropdown-trigger"
+        aria-controls="dropdownContent"
+        aria-expanded="[[!opened]]"><span class="displayedValue">[[displayedValue]]</span><span class$="chevron [[_hideClass(hideChevron)]]"><iron-icon icon="fa:angle-down"></iron-icon></span></button>
+    </slot>
+
+    <!-- iron dropdown will handle positioning of the menu based on the trigger and options -->
+    <iron-dropdown
+      id="ironDropdown"
+      dynamic-align
+      no-overlap
+      restore-focus-on-close
+      horizontal-align="[[horizontalAlign]]"
+      vertical-align="[[verticalAlign]]"
+      position-target="[[_currentTrigger]]"
+      opened="{{opened}}">
+      <!-- actual dropdown menu -->
+      <div id="dropdownContent"
+           aria-hidden$="[[!opened]]"
+           slot="dropdown-content"
+           class="dropdown-content">
+        <!-- header slot for external custom content -->
+        <slot name="header"></slot>
+        <!-- search input if needed -->
+        <input
+          id="search"
+          class$="[[_showClass(search)]]"
+          autocomplete="off"
+          placeholder="Search"
+          value="{{_searchText::input}}">
+        <!-- list of items -->
+        <template id="menuTemplate" is="dom-repeat" items="[[items]]">
+          <!-- style item based on selection, visibility and disabled -->
+          <div class$="[[_getItemClass(item.selected, item.disabled)]] [[_hideClass(item.hidden)]]"
+               on-tap="_handleItemClick"
+               tabindex="-1">
+            <!-- reserve "tick" space if in multi -->
+            <span class$="tick [[_showClass(multi)]]">
+              <span class$="[[_showClass(item.selected)]]"><iron-icon class="icon" icon="fa:check"></iron-icon></span>
+            </span>
+            <!-- item displayed value -->
+            <span>[[item.value]]</span>
+          </div>
+
+        </template>
+        <!-- footer slot for external custom content -->
+        <slot name="footer"></slot>
+      </div>
+    </iron-dropdown>
+
+
+  </template>
+
+  <script>
+    /**
+     * `chlg-dropdown`
+     * A flexible dropdown for our project
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class ChlgDropdown extends Polymer.Element {
+
+      /**
+      * chlg-dropdown-item-selected, fired when an item is selected in the dropdown
+      * through user interaction: click or keyboard. The detail of the event will contain
+      * the data item representing the item selected
+      *
+      * @event chlg-dropdown-item-selected
+      */
+      static get is() { return 'chlg-dropdown'; }
+      static get properties() {
+        return {
+          /**
+           * A flag which reflects/sets the states of the dropdown: menu opened or closed
+           */
+          opened: {
+            type: Boolean,
+            value: false,
+            notify: true
+          },
+
+          /**
+           * Allows the user to select several items in a dropdown. When enabled each item in the
+           * dropdown will have a checkbox/tick indicating whether an item is currently selected.
+           * Selecting an item won't close the dropdown to allow further selection
+           */
+          multi: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * represents the value(s) currently selected. Based on `selectBy` it's either :
+           * - an item value
+           * - an item key
+           * - a complete item
+           *
+           * if `multi` is on then this will be an array rather than a single value
+           */
+          selectedValues: {
+            type: Object,
+            notify: true
+          },
+
+          /**
+           * Keep internal track of selected items "by item" for convenience
+           */
+          _selectedItems: {
+            type: Object
+          },
+
+          /**
+           * Drives what is reflected in `selectedValues`. Can be either:
+           * - 'value'
+           * - 'key'
+           * - 'item'
+           */
+          selectBy: {
+            type: String,
+            value: 'value'
+          },
+
+           /**
+           * When enabled adds an input above the first dropdown item to allow searching based on items values
+           */
+          search: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Flag to hide the chevron on the default dropdown trigger
+           */
+          hideChevron: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * The string input by the user when searching
+           */
+          _searchText: {
+            type: String,
+            value: ''
+          },
+
+          /**
+           * The element currently focused
+           */
+          _currentlyFocused: {
+            type: HTMLElement
+          },
+
+          /**
+           * Items to be displayed in the dropdown. Each item is an object that can have
+           * the following properties:
+           * - key (mandatory): unique key for this item
+           * - value (mandatory): value to display for this item
+           * - selected: whether this item should be selected. When a user selects an item
+           * it will be appropriately reflected in the `items` array
+           * - disabled: whether this item should be disabled (different look and can't be
+           * selected)
+           */
+          items: {
+            type: Array,
+            value: function() {
+              return [];
+            }
+          },
+
+          /**
+           * The text displayed in the trigger element, based on what values are selected. Can be set as well
+           */
+          displayedValue: {
+            type: String
+          },
+
+          /**
+           * The text to display in the trigger element, if no values are
+           * selected
+           */
+          defaultDisplayedValue: {
+            type: String,
+            value: 'Select'
+          },
+
+          /**
+           * allows to customize the displayed value. If defined this function
+           * will be called every time `displayValue` should change. It should
+           * return the desired `displayValue`.
+           * It will be run in the context of the dropdown and will have two
+           * arguments:
+           * - `selectedValues`: same property as the one oin the dropdown
+           * - `value`: represent the selected values, "by value". Will
+           *   be either a string or an array depending on `multi`
+           */
+          displayedValueCustom: {
+            type: Function
+          },
+
+          /**
+           * The current dropdown trigger, either the default one or an external trigger
+           */
+           _currentTrigger: {
+            type: HTMLElement,
+            value: false
+          },
+
+          /**
+           * Defines how the user interact (open/close) the dropdown. Can be either 'click'
+           * or 'hover' (or anything else to manually handle opening and closing)
+           */
+          interactionMode: {
+            type: String,
+            value: 'click'
+          },
+
+          /**
+           * The orientation against which to align the dropdown content horizontally relative to the dropdown trigger. 
+           * - left
+           * - right
+           * - center
+           * - auto
+           */
+          horizontalAlign: {
+            type: String,
+            value: 'left'
+          },
+
+          /**
+           * The orientation against which to align the dropdown content vertically relative to the dropdown trigger. 
+           * - top
+           * - bottom
+           * - middle
+           * - auto
+           */
+          verticalAlign: {
+            type: String,
+            value: 'top'
+          },
+
+          /**
+           * Time (ms) after which the dropdown closes when mousing out in
+           * hover interaction mode
+           */
+          _hoverCloseTiming: {
+            type: Number,
+            value: 50
+          },
+
+          /**
+           * used internally to cancel a request for close coming from hover interaction
+           */
+          _cancelHoverClose: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Whether a hover request for closing has been issued
+           */
+          _isHoverClosing: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+
+      static get observers() {
+        return [
+          '_updateSelectedValues(items, items.*.selected)',
+          '_filterOnSearch(_searchText)',
+          '_computeDisplayValue(selectedValues, multi)',
+          '_openedChanged(opened)',
+          '_setInteractions(interactionMode, _currentTrigger)'
+          ];
+      }
+
+      ready() {
+        super.ready();
+
+        //default to internal trigger
+        this._currentTrigger = this.$.trigger;
+
+        //add listener only once, no need to remove on disconnect as it's attached
+        //to a shadow dom elem: it won't prevent GC when the element is destroyed
+        this.$.ironDropdown.addEventListener('iron-overlay-canceled', this._handleCanceled.bind(this));
+      }
+
+      /************************************************************************
+       * Input event handlers
+       * *********************************************************************/
+
+      _handleItemClick(evt) {
+
+        //select this item and make sure we keep track of the focused
+        //item for keybard nav
+        this._selectElem(evt.target);
+        this._currentlyFocused = evt.target;
+
+        evt.preventDefault();
+      }
+
+      _setInteractions() {
+
+        if(this._currentTrigger && this.interactionMode) {
+
+          //add interaction based on the mode
+          if(this.interactionMode === 'click') {
+
+            //toggle open/close on click
+            this._currentTrigger.addEventListener('tap', () => {
+              this.set('opened', !this.opened);
+            });
+
+          } else if(this.interactionMode === 'hover') {
+            this._currentTrigger.addEventListener('mouseenter', this._requestHoverOpen.bind(this));
+            this._currentTrigger.addEventListener('mouseleave', this._requestHoverClose.bind(this))
+            this.$.dropdownContent.addEventListener('mouseenter', this._requestHoverOpen.bind(this));
+            this.$.dropdownContent.addEventListener('mouseleave', this._requestHoverClose.bind(this));
+          }
+        }
+      }
+
+      /**********************************************************************
+       * Hover interaction logic
+       * *******************************************************************/
+
+      _requestHoverClose(evt) {
+
+        this._isHoverClosing = true;
+        //gives some time before closing to allow for cancellation
+        //(typically when mousing out the trigger to mouse enter the content and vice versa)
+        window.setTimeout(() => {
+          if(!this._cancelHoverClose) {
+            this.set('opened', false);
+          }
+          this._cancelHoverClose = false;
+          this._isHoverClosing = false;
+        }, this._hoverCloseTiming);
+      }
+
+      _requestHoverOpen(evt) {
+
+        if(!this.opened) {
+          this.set('opened', true);
+        } else if(this._isHoverClosing) {
+          //make sure we cancel any pending close
+          this._cancelHoverClose = true;
+        }
+      }
+
+      /**********************************************************************
+       * Helpers for dom management: classes, conditional stamping...
+       * *******************************************************************/
+
+      _itemIsSelected(multi, itemIsSelected) {
+        return multi && itemIsSelected;
+      }
+
+      _getItemClass(selected, disabled, hidden) {
+        let result = 'item ';
+
+        //disabed trumps selected
+        if(disabled) {
+          result += 'disabled ';
+        } else if(selected) {
+          result += 'selected ';
+        }
+
+        return result;
+      }
+
+      _hideClass(bool) {
+        return bool ? 'hidden' : '';
+      }
+
+      _showClass(bool) {
+        return bool ? '' : 'hidden';
+      }
+
+      /**
+       *  Gets all currently visible dropdown items, including internal slotted content
+       * and input search box
+       */
+      _getCurrentInteractiveItems() {
+        return Polymer.FlattenedNodesObserver.getFlattenedNodes(this.$.dropdownContent).filter(elem => {
+          return elem.nodeType === Node.ELEMENT_NODE && elem.nodeName !== 'DOM-REPEAT' && !elem.classList.contains('hidden') && !elem.classList.contains('disabled');
+          });
+      }
+
+      _triggerSlotChanged(evt) {
+        let nodes = this.$.triggerSlot.assignedNodes();
+
+        //use the slotted element that has been given to us as the new trigger
+        if(nodes.length) {
+          this.set('_currentTrigger', nodes[0]);
+        }
+      }
+
+      /**********************************************************************
+       * Logic
+       * *******************************************************************/
+
+      /**
+       * Hides and show items based on search text
+       */
+      _filterOnSearch() {
+
+        //fetch all dom items and make the search case insensitive
+        const elements = this.$.dropdownContent.querySelectorAll('.item'),
+              search = this._searchText.toLowerCase();
+
+        //hide and show based on text searched
+        elements.forEach((elem, index) => {
+          let item = this.$.menuTemplate.itemForElement(elem);
+
+          if(item.value.toLowerCase().indexOf(search) !== -1) {
+            elem.classList.remove('hidden');
+            elem.setAttribute('aria-hidden', false);
+          } else {
+            elem.classList.add('hidden');
+            elem.setAttribute('aria-hidden', true);
+          }
+        });
+
+        //the content might have changed size, ensure the menu is
+        //positioned correctly
+        this.$.ironDropdown.notifyResize();
+      }
+
+      /**
+       * Computes and sets the `displayedValue` based on currently selected value
+       */
+      _computeDisplayValue() {
+
+        if(this.selectedValues) {
+
+          //get all selected items by value
+          let values = this.multi ? this._selectedItems.map( i => i.value) : this._selectedItems.value,
+              result = values;
+
+          //either:
+          // - run custom function provided by external dev
+          // - join all values in multi
+          // - display the value in single
+          if(this.displayedValueCustom) {
+            result = this.displayedValueCustom.bind(this)(this.selectedValues, values);
+          } else if(this.multi) {
+            result = values.join(', ');
+          }
+
+          //if we somehow have no value fallback to the default string
+          if(!result) {
+            result = this.defaultDisplayedValue;
+          }
+
+          this.set('displayedValue', result);
+        } else {
+
+          //no selected values, use default string
+          this.set('displayedValue', this.defaultDisplayedValue);
+        }
+      }
+
+      _handleCanceled(evt) {
+
+        //by default iron dropdown will close the dropdown on any click
+        //outside of it. In our case we want to prevent that behavior
+        //when clicking the trigger in order to manually decide whether to open
+        //or close
+        if(evt.detail.path.indexOf(this._currentTrigger) !== -1) {
+          evt.preventDefault();
+        }
+      }
+
+      /**
+       * This will be called anytime the dropdown has just been
+       * requested to open/close. Do some preparation/clean up work here
+       */
+      _openedChanged() {
+        if(!this.opened) {
+
+          //reset focused element
+          this._currentlyFocused = null;
+
+          //reset search
+          this._searchText = '';
+        } else {
+
+          //focus first item. Put the call on top of the stack
+          //to let the browser process the eventual native focus
+          //of an event kicking this opening, and then refocus where
+          //we want
+          window.setTimeout(() => {this._changeItemFocus(true)}, 0);
+        }
+      }
+
+      /**
+       * Selects a dropdown item based on an HTML element. Elem is expected to be one of
+       * the '.item' div
+       */
+      _selectElem(elem) {
+
+        if(elem) {
+          //retrieve actual data item from dom repeat
+          let item = this.$.menuTemplate.itemForElement(elem),
+              index =  this.$.menuTemplate.indexForElement(elem);
+
+          //ignore if item is disabled
+          if(!item.disabled) {
+
+            this._selectItem(item, index);
+
+            if(!this.multi) {
+              //close after selecting an item if we're not in multi mode
+              this.set('opened', false);
+            }
+
+            //notify the selection. Use bubbles and composed to allow traversing shadow dom up
+            this.dispatchEvent(new CustomEvent('chlg-dropdown-item-selected', {
+              bubbles: true,
+              composed: true,
+              detail: item
+            }));
+          }
+        }
+      }
+
+      /**
+       * Selects a dropdown item based on the data item
+       */
+      _selectItem(item, index) {
+
+        let info = this._getInfoFromItem(item);
+
+        if(this.multi) {
+
+          //set and notify that this item is now selected
+          this.set('items.' + index + '.selected', !this.items[index].selected);
+
+        } else {
+
+          //make sure all other items are not selected anymore and select this new one
+          for(let i=0; i<this.items.length; i++) {
+            this.set('items.' + i + '.selected', i === index ? true : false);
+          }
+        }
+
+        this._updateSelectedValues();
+      }
+
+
+      /**
+       * Rebuilds selectedValues when selection changes
+       */
+      _updateSelectedValues() {
+
+        //debounce call to batch updates
+        this._debouncer = Polymer.Debouncer.debounce(
+        this._debouncer,
+        Polymer.Async.timeOut.after(10),
+        () => {
+
+          let result,
+              internalResult;
+
+          //get an array or just a single value depending
+          //on multi mode
+          if(this.multi) {
+            result = [];
+            internalResult = [];
+
+            this.items.forEach((item) => {
+              if(item.selected) {
+                result.push(this._getInfoFromItem(item));
+                internalResult.push(item);
+              }
+            });
+          } else {
+            this.items.forEach((item) => {
+              if(item.selected) {
+                result = this._getInfoFromItem(item);
+                internalResult = item;
+              }
+            });
+          }
+
+          this._selectedItems = internalResult;
+          this.set('selectedValues', result);
+        });
+      }
+
+      /**
+       * Returns the appropriate info for a data item based on `selectBy`
+       */
+      _getInfoFromItem(item) {
+
+        if(this.selectBy === 'item') {
+          return item;
+        } else if (this.selectBy === 'key') {
+          return item.key;
+        } else {
+
+          //always default back to value even if selectBy is incorrect
+          return item.value
+        }
+      }
+
+      /**********************************************************************
+       * Keyboard navigation
+       * *******************************************************************/
+
+      _handleKeyboardNav(evt) {
+
+        switch(evt.detail.keyboardEvent.code) {
+          case 'ArrowUp':
+            this.set('opened', true);
+            //opening will have set the first item
+            //so move backward in both cases
+            this._changeItemFocus(false);
+            break;
+          case 'ArrowDown':
+            if(!this.opened) {
+              this.set('opened', true);
+            } else {
+              this._changeItemFocus(true);
+            }
+            break;
+          case 'Escape':
+            this.set('opened', false);
+            break;
+          case 'Enter':
+          case 'Space':
+            if(this.opened) {
+              //select focused elem and close if needed
+              this._selectElem(this._currentlyFocused);
+              if(!this.multi) {
+                this.set('opened', false);
+              }
+              evt.detail.keyboardEvent.preventDefault();
+            }
+            break;
+          case 'Tab':
+            //close and let native behavior kick in
+            this.set('opened', false);
+            break;
+        }
+      }
+
+      /**
+       * Focuses the next or previous items (based on forward argument), based
+       * on `currentlyFocused`
+       */
+      _changeItemFocus(forward) {
+
+        const visibleElements = this._getCurrentInteractiveItems(),
+              currentIndex = visibleElements.indexOf(this._currentlyFocused);
+
+        let toSelect = this._computeFocusIndex(visibleElements, currentIndex, forward);
+
+        //focus on appropriate element and unfocus all other
+        visibleElements.forEach((elem, i) => {
+          if(i === toSelect) {
+            elem.classList.add('focused');
+            if(elem.focus) {
+              elem.focus();
+            }
+            this._currentlyFocused = elem;
+          } else {
+            elem.classList.remove('focused');
+          }
+        });
+      }
+
+      _computeFocusIndex(visibleElements, currentIndex, forward) {
+
+
+        if(forward === null) {
+
+          //refocus current element
+          return currentIndex;
+        } else {
+
+          //by default select first or last based on "direction"
+          let toSelect = forward ? 0 : visibleElements.length -1;
+
+          if(currentIndex !== -1) {
+            toSelect = forward ? currentIndex + 1 : currentIndex - 1;
+
+            //loop through items
+            if(toSelect < 0) {
+              toSelect = visibleElements.length -1;
+            } else if(toSelect > visibleElements.length -1) {
+              toSelect = 0;
+            }
+          }
+
+          return toSelect;
+        }
+      }
+
+      /**
+       * Gives focus to the dropdown, effectively to its trigger
+       */
+      focus() {
+        if(this._currentTrigger) {
+          this._currentTrigger.focus();
+        }
+      }
+    }
+
+    window.customElements.define(ChlgDropdown.is, ChlgDropdown);
+  </script>
+</dom-module>

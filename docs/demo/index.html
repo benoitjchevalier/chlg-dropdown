@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>chlg-dropdown demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+
+    <link rel="import" href="../chlg-dropdown.html">
+    <style>
+      @font-face {
+        font-family: "GE Inspira Sans";
+        src: url("../css/GEInspiraSans.woff") format('woff');
+      }
+      body {
+        font-family: "GE Inspira Sans";
+        font-size: 15px;
+        font-weight: 400;
+      }
+      .page {
+        justify-content: center;
+      }
+      .main {
+        padding: 50px;
+        display: block;
+        max-width: 1200px;
+      }
+      .container {
+        display: flex;
+        justify-content: space-evenly;
+        border: 1px solid #ACACAC;
+        padding: 10px;
+      }
+      .align {
+        justify-content: space-evenly;
+      }
+      .flex {
+        display: flex;
+      }
+      .flex--col {
+        flex-flow: column;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="flex page">
+      <div class="main">
+        <h1>Challenge dropdown: thoughts, examples and features</h1>
+
+        <h2>Initial considerations and choices</h2>
+        <p>Given the requirements the dropdown has to be built as a reusable component, which can be done in a number of different way given the current state of the javascript front-end world (Angular, React, Polymer, Vue...). I've chosen Polymer for its interoperability as well as the fact that this is the library and ecosystem I'm the most familiar with, allowing me to efficiently build the component as well as the documentation.</p>
+        <p>The dropdown uses two external component:</p>
+        <ul>
+          <li><a href="https://www.webcomponents.org/element/PolymerElements/iron-dropdown/elements/iron-dropdown">iron-dropdown</a> which is a low level component provided by the Polymer team allowing positioning of an item relative to an other and showing/hiding this item. This solves common problem such as repositioning a menu when outside of the window, chosing alignment, etc...</li>
+          <li><a href="https://www.webcomponents.org/element/PolymerElements/iron-a11y-keys">iron-a11y-keys</a> is a wrapper around keyboard press events, making it easier to organize the code when listening to keyboard events.</li>
+        </ul>
+        <p>I haven't chosen those two components to "cut corners" but those are the decisions I would have made if genuinely building this dropdown as part of an app or design system. Iron-dropdown solves a common problem of positioning an item with a lot of flexibility and configuration options which can be exposed to the end developer. I have worked with it and know it's reliable and work well in these kind of scenarios, I'm trying no to reinvent the wheel if I don't have to, allowing me to focus more on differentiating features.</p>
+        <p>The <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html">API page</a> has been built directly from the code. Each property, methods, event and css variables are commented in the code. Polymer CLI then allows for parsing the file and extracting the information into a JSON file. This file can then be consumed, in this case by an iron-component-page component but this could be a custom component for a Design System, to produce a documentation/API page.</p>
+
+        <h2>Styling</h2>
+        <p>The dropdown is currently styled using sass and css variables. The css variables allow flexibility: they could be used in a theme where theme file would define those variables to what the dropdown should look like, allowing for applying different themes easily. They also allow custom external override, giving flexibility for external developers to style the dropdown as well as override a potential theme. This can be useful for styling dropdowns differently based on their use (navigation vs selection for example). Please see the <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html">the API</a> for a list of the currently available css variables. More variables can be added for finer granular control of the styling.</p>
+        <p>The default style makes use of the different state of the trigger: hovered, pressed and normal. The dropdown items use different shades of blue to represent selection and hover, allowing distinction by color blind people. Focus on an item, useful for keyboard navigation, is represented by a black border.</p>
+
+        <h2>Defining items and watching selection</h2>
+        <p>The items available in the dropdown menus are passed through the 'items' array property. Each item is an object which needs a 'key' and 'value'. Additionally it can have a 'selected' and/or 'disabled' property which will represent the state of the item in the dropdown. Any custom property can be added and will be retained.</p>
+        <p>Selected items are reflected in the 'selectedValues' property, based on the 'selectBy' property: it will either contain the key, the value or the whole item.</p>
+        <div class="container">
+            <div class="flex flex--col">
+              <h4>Default, select by value, Pandas disabled</h4>
+              <chlg-dropdown id="ddReflect0" class="ddToReflect" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas", "disabled": true}]'></chlg-dropdown>
+              <div id="reflectRes0">Select item to see selected values</div>
+            </div>
+            <div class="flex flex--col">
+              <h4>Select by key, Pandas initially selected</h4>
+              <chlg-dropdown id="ddReflect1" class="ddToReflect" select-by="key" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas", "selected": true}]'></chlg-dropdown>
+              <div id="reflectRes1">Select item to see selected values</div>
+            </div>
+            <div class="flex flex--col">
+              <h4>Select by item</h4>
+              <chlg-dropdown id="ddReflect2" class="ddToReflect" select-by="item" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+              <div id="reflectRes2">Select item to see selected values</div>
+            </div>
+          </div>
+
+
+        <h2>Dropdown positioning</h2>
+        <p>As mentioned above the dropdown menu position, relative to its trigger, can be configured through iron-dropdown. verticalAlign and horizontalAlign will tried to be matched, but if the dropdown is cropped then other values might be chosen (you can try by resizing the browser so that the trigger is just above the bottom of the browser. In that configuration the dropdown will open on the side/up even if it is configured to open on the bottom)</p>
+
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Default, bottom left</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Top right</h4>
+            <chlg-dropdown horizontal-align="right" vertical-align="bottom" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Middle right</h4>
+            <chlg-dropdown horizontal-align="left" vertical-align="middle" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+        </div>
+
+        <h2>Mouse Interaction</h2>
+        <p>The dropdown can use three different types of mouse interaction based on the "interactionMode" property:</p>
+        <ul>
+          <li>Click (default): the menu will be opened when clicking on the trigger. It will be closed when clicking on the trigger again, or anywhere outside of the menu. When clicking an item the menu will close if in "single" mode and will stay open for further selection if in "multi" mode.</li>
+          <li>Hover: the menu will open when hovering the trigger and close when the mouse gets out of the trigger or menu. It will also close when selecting an item in a similar way as "Click".</li>
+          <li>None: no opening behavior will be provided, but the dropdown will still close on outside click. It gives full control to the external developper for custom behaviors.</li>
+        </ul>
+        <p>Please note that this only impacts mouse behavior but keyboard navigation will always be available.</p>
+
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Click</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Hover</h4>
+            <chlg-dropdown interaction-mode="hover" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>None</h4>
+            <chlg-dropdown interaction-mode="none" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+        </div>
+
+        <h2>Custom Trigger</h2>
+        <p>By default the dropdown has its own trigger, which is the visible component the user will interact with in order to open/close the menu. The trigger will also try to reflect the current selection in the dropdown. It can be styled through css variables and configured to some extents: the chevron can be hidden and a custom function can be passed to decide what text the trigger should display based on currently selected values.</p>
+        <p>However if that is not enough a custom trigger can be passed in through the slot API, allowing an external developper to take full control of the trigger appearance and behavior. By default the custom trigger will still try to use the default interaction based on the "interactionMode" property.</p>
+
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Default trigger</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Custom trigger, just a salmon div</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+              <div slot="trigger" style="background-color:salmon">I like salmon</div>
+            </chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Custom trigger and hover mode</h4>
+            <chlg-dropdown interaction-mode="hover" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+              <div slot="trigger" style="background-color:salmon">I like salmon</div>
+            </chlg-dropdown>
+          </div>
+        </div>
+
+        <h2>Accessibility</h2>
+        <p>The dropdown has been designed with accessibility in mind. The color scheme allows color blind people to differentiate between different state. Keyboard navigation is available: when the trigger is focused the dropdown can be opened with Space and Enter. The first item is focused and focus can be changed with Up and Down. Selection can be made with Space/Enter and the dropdown can be closed with Esc. Tabbing while the menu is opened will close the menu and continue the native tab behavior (focus next focusable element).</p>
+        <p>The dropdown also follows WAI-ARIA principles, ensuring the browser knows the trigger controls a menu and dynamically letting it know what is hidden and visible through aria-hidden.</p>
+        <p>The dropdown also has a focus() function which will focus its trigger, allowing external developers to handle custom focus behavior in their app.</p>
+        <h4>Click to give focus to the dropdown and start keyboard navigation (or use tab)</h4>
+        <button id="focus">Focus</button>
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Try keyboard navigation</h4>
+            <chlg-dropdown id="toFocus" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+        </div>
+
+        <h2>Multi Mode</h2>
+        <p>The dropdown can use a 'multi' mode, allowing the user to select multiple values rather than a single one. The values will be reflected in the trigger, up to a certain maximum width that can be configured, but that reflection value can be customized</p>
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Multi mode</h4>
+            <chlg-dropdown multi items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Multi mode with a custom display of values in trigger</h4>
+            <chlg-dropdown id="customDisplay" multi items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+            </chlg-dropdown>
+          </div>
+        </div>
+
+        <h2>Search Mode</h2>
+        <p>The dropdown can use a search mode for filtering its content, usually useful when dealing with a long list of items.</p>
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Search mode</h4>
+            <chlg-dropdown search items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Search and multi</h4>
+            <chlg-dropdown search multi items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+            </chlg-dropdown>
+          </div>
+        </div>
+
+        <h2>Custom Content</h2>
+        <p>The dropdown menu can also get custom HTML content above and/or below the usual items. This allows to build a hybrid dropdown (e.g add some specific actions on top and then have some selectable filters in a menu for a datatable) or a completely custom menu.</p>
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Hybrid: custom content + items</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+              <div slot="header" tabindex="-1" style="background-color: salmon; border-bottom:1px solid;">Some header action</div>
+              <div slot="footer" tabindex="-1" style="background-color: firebrick; border-top:1px solid">Some footer action</div>
+            </chlg-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </body>
+  <script>
+    window.addEventListener('WebComponentsReady', () => {
+      const focusButton = document.getElementById('focus'),
+            ddToFocus = document.getElementById('toFocus'),
+            ddToReflect = document.querySelectorAll('.ddToReflect'),
+            ddCustomDisplay = document.getElementById('customDisplay');
+
+      ddCustomDisplay.set('displayedValueCustom', function(values) {
+        return values.length + ' selected';
+      });
+            
+
+      focusButton.addEventListener('click', () => {
+        ddToFocus.focus();
+      });
+
+      ddToReflect.forEach((dd) => {
+        dd.addEventListener('selected-values-changed', (evt) => {
+          let index = evt.target.id[evt.target.id.length-1];
+
+          document.getElementById(`reflectRes${index}`).innerText = JSON.stringify(evt.target.selectedValues);
+        });
+      });
+    });
+
+
+
+  </script>
+</html>
