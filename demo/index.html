@@ -48,7 +48,7 @@
 
     <div class="flex page">
       <div class="main">
-        <h1>Challenge dropdown: thoughts, examples and how to</h1>
+        <h1>Challenge dropdown: thoughts, examples and features</h1>
 
         <h2>Initial considerations and choices</h2>
         <p>Given the requirements the dropdown has to be built as a reusable component, which can be done in a number of different way given the current state of the javascript front-end world (Angular, React, Polymer, Vue...). I've chosen Polymer for its interoperability as well as the fact that this is the library and ecosystem I'm the most familiar with, allowing me to efficiently build the component as well as the documentation.</p>
@@ -152,7 +152,7 @@
         </div>
 
         <h2>Accessibility</h2>
-        <p>The dropdown has been designed with accessibility in mind. The color scheme allows color blind people to differentiate between different state. Keyboard navigation is available: when the trigger is focused the dropdown can be opened with Space and Enter. The first item is focused and focus can be changed with Up and Down. Selection can be made with Space/Enter and the dropdown can be closed with Esc.</p>
+        <p>The dropdown has been designed with accessibility in mind. The color scheme allows color blind people to differentiate between different state. Keyboard navigation is available: when the trigger is focused the dropdown can be opened with Space and Enter. The first item is focused and focus can be changed with Up and Down. Selection can be made with Space/Enter and the dropdown can be closed with Esc. Tabbing while the menu is opened will close the menu and continue the native tab behavior (focus next focusable element).</p>
         <p>The dropdown also follows WAI-ARIA principles, ensuring the browser knows the trigger controls a menu and dynamically letting it know what is hidden and visible through aria-hidden.</p>
         <p>The dropdown also has a focus() function which will focus its trigger, allowing external developers to handle custom focus behavior in their app.</p>
         <h4>Click to give focus to the dropdown and start keyboard navigation (or use tab)</h4>
@@ -165,9 +165,44 @@
         </div>
 
         <h2>Multi Mode</h2>
-        <h2>Search Mode</h2>
+        <p>The dropdown can use a 'multi' mode, allowing the user to select multiple values rather than a single one. The values will be reflected in the trigger, up to a certain maximum width that can be configured, but that reflection value can be customized</p>
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Multi mode</h4>
+            <chlg-dropdown multi items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Multi mode with a custom display of values in trigger</h4>
+            <chlg-dropdown id="customDisplay" multi items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+            </chlg-dropdown>
+          </div>
+        </div>
 
-        <h2>Custom Content</h2
+        <h2>Search Mode</h2>
+        <p>The dropdown can use a search mode for filtering its content, usually useful when dealing with a long list of items.</p>
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Search mode</h4>
+            <chlg-dropdown search items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Search and multi</h4>
+            <chlg-dropdown search multi items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+            </chlg-dropdown>
+          </div>
+        </div>
+
+        <h2>Custom Content</h2>
+        <p>The dropdown menu can also get custom HTML content above and/or below the usual items. This allows to build a hybrid dropdown (e.g add some specific actions on top and then have some selectable filters in a menu for a datatable) or a completely custom menu.</p>
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Hybrid: custom content + items</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'>
+              <div slot="header" tabindex="-1" style="background-color: salmon; border-bottom:1px solid;">Some header action</div>
+              <div slot="footer" tabindex="-1" style="background-color: firebrick; border-top:1px solid">Some footer action</div>
+            </chlg-dropdown>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -178,7 +213,12 @@
     window.addEventListener('WebComponentsReady', () => {
       const focusButton = document.getElementById('focus'),
             ddToFocus = document.getElementById('toFocus'),
-            ddToReflect = document.querySelectorAll('.ddToReflect');
+            ddToReflect = document.querySelectorAll('.ddToReflect'),
+            ddCustomDisplay = document.getElementById('customDisplay');
+
+      ddCustomDisplay.set('displayedValueCustom', function(values) {
+        return values.length + ' selected';
+      });
             
 
       focusButton.addEventListener('click', () => {
@@ -192,16 +232,6 @@
           document.getElementById(`reflectRes${index}`).innerText = JSON.stringify(evt.target.selectedValues);
         });
       });
-      // const multiDropdown = document.getElementById('multi'),
-      //     reflectText = document.getElementById('reflect');
-
-      // multiDropdown.addEventListener('opened-changed', () => {
-      //   reflectText.innerText = 'Selected values: ' + JSON.stringify(multiDropdown.selectedValues);
-      // });
-
-      // multiDropdown.addEventListener('selectedValues-changed', () => {
-      //   reflectText.innerText = 'Selected values: ' + JSON.stringify(multiDropdown.selectedValues);
-      // });
     });
 
 

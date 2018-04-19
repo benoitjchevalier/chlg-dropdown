@@ -494,7 +494,7 @@ Custom property | Description
           // - join all values in multi
           // - display the value in single
           if(this.displayedValueCustom) {
-            result = this.displayedValueCustom(this.selectedValues, values).bind(this);
+            result = this.displayedValueCustom.bind(this)(this.selectedValues, values);
           } else if(this.multi) {
             result = values.join(', ');
           }
