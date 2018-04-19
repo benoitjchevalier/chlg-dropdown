@@ -58,8 +58,8 @@
         <p>The dropdown is currently styled using sass and css variables. The css variables allow flexibility: they could be used in a theme where theme file would define those variables to what the dropdown should look like, allowing for applying different themes easily. They also allow custom external override, giving flexibility for external developers to style the dropdown as well as override a potential theme. This can be useful for styling dropdowns differently based on their use (navigation vs selection for example). Please see the <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html">the API</a> for a list of the currently available css variables. More variables can be added for finer granular control of the styling.</p>
         <p>The default style makes use of the different state of the trigger: hovered, pressed and normal. The dropdown items use different shades of blue to represent selection and hover, allowing distinction by color blind people. Focus on an item, useful for keyboard navigation, is represented by a black border.</p>
 
-        <h2>Interaction</h2>
-        <p>The dropdown can use three different types of interaction based on the "interactionMode" property:</p>
+        <h2>Mouse Interaction</h2>
+        <p>The dropdown can use three different types of mouse interaction based on the "interactionMode" property:</p>
         <ul>
           <li>Click (default): the menu will be opened when clicking on the trigger. It will be closed when clicking on the trigger again, or anywhere outside of the menu. When clicking an item the menu will close if in "single" mode and will stay open for further selection if in "multi" mode.</li>
           <li>Hover: the menu will open when hovering the trigger and close when the mouse gets out of the trigger or menu. It will also close when selecting an item in a similar way as "Click".</li>
@@ -83,7 +83,7 @@
         </div>
 
         <h2>Custom Trigger</h2>
-        <p>By default the dropdown has its own trigger, which is the visible component the user will interact with in order to open/close the window. The trigger will also try to reflect the current selection in the dropdown. It can be styled through css variables and configured to some extents: the chevron can be hidden and a custom function can be passed to decide what text the trigger should display based on currently selected values.</p>
+        <p>By default the dropdown has its own trigger, which is the visible component the user will interact with in order to open/close the menu. The trigger will also try to reflect the current selection in the dropdown. It can be styled through css variables and configured to some extents: the chevron can be hidden and a custom function can be passed to decide what text the trigger should display based on currently selected values.</p>
         <p>However if that is not enough a custom trigger can be passed in through the slot API, allowing an external developper to take full control of the trigger appearance and behavior. By default the custom trigger will still try to use the default interaction based on the "interactionMode" property.</p>
 
         <div class="container">
@@ -105,9 +105,21 @@
           </div>
         </div>
 
-        <h3>Interaction Mode</h3>
         <h3>Keyboard Navigation</h3>
         <h2>Accessibility</h2>
+        <p>The dropdown has been designed with accessibility in mind. The color scheme allows color blind people to differentiate between different state. Keyboard navigation is available: when the trigger is focused the dropdown can be opened with Space and Enter. The first item is focused and focus can be changed with Up and Down. Selection can be made with Space/Enter and the dropdown can be closed with Esc.</p>
+        <p>The dropdown also follows WAI-ARIA principles, ensuring the browser knows the trigger controls a menu and dynamically letting it know what is hidden and visible through aria-hidden.</p>
+
+        <div class="container">
+          <div class="flex flex--col">
+            <h4>Click to give focus to the dropdown and start keyboard navigation</h4>
+            <button id="focus">Focus</button>
+          </div>
+          <div class="flex flex--col">
+            <h4>Try keyboard navigation</h4>
+            <chlg-dropdown id="toFocus" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+        </div>
 
         <h2>Multi Mode</h2>
         <h2>Search Mode</h2>
@@ -118,115 +130,16 @@
     </div>
 
 
-    <!-- <div class="flex">
-
-      <div class="container">
-        <h3>Basic dropdown</h3>
-        <chlg-dropdown-demo
-          items='[{"key":1, "value": "Polar Bear"},
-                  {"key": 2,"value":"Cat", "disabled": true},
-                  {"key":3, "value": "Dogs", "selected": true},
-                  {"key": 4, "value": "Koala"},
-                  {"key": 5, "value": "Rabbit"}]'>
-        </chlg-dropdown-demo>
-      </div>
-
-      <div class="container">
-        <h3>Multi mode</h3>
-          <chlg-dropdown-demo
-            id="multi"
-            multi
-            items='[{"key":1, "value": "Polar Bear"},
-                    {"key": 2,"value":"Cat", "disabled": true},
-                    {"key":3, "value": "Dogs", "selected": false},
-                    {"key": 4, "value": "Koala"},
-                    {"key": 5, "value": "Rabbit"}]'>
-          </chlg-dropdown-demo>
-      </div>
-
-    </div>
-
-    <div class="flex">
-      <div class="container">
-          <h3>Select by key</h3>
-            <chlg-dropdown-demo
-              select-by="key"
-              items='[{"key":1, "value": "Polar Bear"},
-                      {"key": 2,"value":"Cat", "disabled": true},
-                      {"key":3, "value": "Dogs", "selected": true},
-                      {"key": 4, "value": "Koala"},
-                      {"key": 5, "value": "Rabbit"}]'>
-            </chlg-dropdown-demo>
-        </div>
-
-        <div class="container">
-          <h3>Select by item</h3>
-            <chlg-dropdown-demo
-              select-by="item"
-              items='[{"key":1, "value": "Polar Bear"},
-                      {"key": 2,"value":"Cat", "disabled": true},
-                      {"key":3, "value": "Dogs", "selected": true},
-                      {"key": 4, "value": "Koala"},
-                      {"key": 5, "value": "Rabbit"}]'>
-            </chlg-dropdown-demo>
-        </div>
-    </div>
-
-    <div class="flex">
-      <div class="container">
-          <h3>Search mode</h3>
-            <chlg-dropdown-demo
-              search-mode
-              items='[{"key":1, "value": "Polar Bear"},
-                      {"key": 2,"value":"Cat", "disabled": true},
-                      {"key":3, "value": "Dogs", "selected": true},
-                      {"key": 4, "value": "Koala"},
-                      {"key": 5, "value": "Rabbit"}]'>
-            </chlg-dropdown-demo>
-        </div>
-
-        <div class="container">
-          <h3>Interaction on hover</h3>
-            <chlg-dropdown
-              interaction-mode="hover"
-              items='[{"key":1, "value": "Polar Bear"},
-                      {"key": 2,"value":"Cat", "disabled": true},
-                      {"key":3, "value": "Dogs", "selected": true},
-                      {"key": 4, "value": "Koala"},
-                      {"key": 5, "value": "Rabbit"}]'>
-            </chlg-dropdown>
-        </div>
-    </div>
-
-    <div class="flex">
-      <div class="container">
-          <h3>Custom trigger</h3>
-            <chlg-dropdown
-              search-mode
-              items='[{"key":1, "value": "Polar Bear"},
-                      {"key": 2,"value":"Cat", "disabled": true},
-                      {"key":3, "value": "Dogs", "selected": true},
-                      {"key": 4, "value": "Koala"},
-                      {"key": 5, "value": "Rabbit"}]'>
-                <button slot="trigger">Custom external trigger</button>
-            </chlg-dropdown>
-        </div>
-
-        <div class="container">
-          <h3>Interaction on hover</h3>
-            <chlg-dropdown
-              select-by="item"
-              items='[{"key":1, "value": "Polar Bear"},
-                      {"key": 2,"value":"Cat", "disabled": true},
-                      {"key":3, "value": "Dogs", "selected": true},
-                      {"key": 4, "value": "Koala"},
-                      {"key": 5, "value": "Rabbit"}]'>
-            </chlg-dropdown>
-        </div>
-      </div> -->
+    
   </body>
   <script>
     window.addEventListener('WebComponentsReady', () => {
+      const focusButton = document.getElementById('focus'),
+            ddToFocus = document.getElementById('toFocus');
+
+      focusButton.addEventListener('click', () => {
+        ddToFocus.focus();
+      });
       // const multiDropdown = document.getElementById('multi'),
       //     reflectText = document.getElementById('reflect');
 
