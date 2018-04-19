@@ -637,6 +637,12 @@ Custom property | Description
 
           this._selectedItems = internalResult;
           this.set('selectedValues', result);
+
+          if(this.multi) {
+            //the trigger might have changed size, ensure the menu is
+            //positioned correctly
+            this.$.ironDropdown.notifyResize();
+          }
         });
       }
 

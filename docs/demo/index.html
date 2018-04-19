@@ -8,6 +8,7 @@
 
     <script src="../webcomponentsjs/webcomponents-loader.js"></script>
 
+    <!-- non docs file -->
     <link rel="import" href="../chlg-dropdown/chlg-dropdown.html">
     <style>
       @font-face {
@@ -51,17 +52,17 @@
         <h1>Challenge dropdown: thoughts, examples and features</h1>
 
         <h2>Initial considerations and choices</h2>
-        <p>Given the requirements the dropdown has to be built as a reusable component, which can be done in a number of different way given the current state of the javascript front-end world (Angular, React, Polymer, Vue...). I've chosen Polymer for its interoperability as well as the fact that this is the library and ecosystem I'm the most familiar with, allowing me to efficiently build the component as well as the documentation.</p>
+        <p>Given the requirements the dropdown had to be built as a reusable component, which can be done in a number of different ways given the current state of the javascript front-end world (Angular, React, Polymer, Vue...). I've chosen Polymer for its interoperability as well as the fact that this is the library and ecosystem I'm the most familiar with, allowing me to efficiently build the component as well as the documentation.</p>
         <p>The dropdown uses two external component:</p>
         <ul>
-          <li><a href="https://www.webcomponents.org/element/PolymerElements/iron-dropdown/elements/iron-dropdown">iron-dropdown</a> which is a low level component provided by the Polymer team allowing positioning of an item relative to an other and showing/hiding this item. This solves common problem such as repositioning a menu when outside of the window, chosing alignment, etc...</li>
+          <li><a href="https://www.webcomponents.org/element/PolymerElements/iron-dropdown/elements/iron-dropdown">iron-dropdown</a> which is a low level component provided by the Polymer team allowing positioning of an item relative to an other and showing/hiding this item. This solves common problem such as repositioning a menu when outside of the window, choosing alignment, etc...</li>
           <li><a href="https://www.webcomponents.org/element/PolymerElements/iron-a11y-keys">iron-a11y-keys</a> is a wrapper around keyboard press events, making it easier to organize the code when listening to keyboard events.</li>
         </ul>
-        <p>I haven't chosen those two components to "cut corners" but those are the decisions I would have made if genuinely building this dropdown as part of an app or design system. Iron-dropdown solves a common problem of positioning an item with a lot of flexibility and configuration options which can be exposed to the end developer. I have worked with it and know it's reliable and work well in these kind of scenarios, I'm trying no to reinvent the wheel if I don't have to, allowing me to focus more on differentiating features.</p>
+        <p>I haven't chosen those two components to "cut corners" but those are the decisions I would have made if genuinely building this dropdown as part of an app or design system. Iron-dropdown solves a common problem of positioning an item with a lot of flexibility and configuration options which can be exposed to the end developer. I have worked with it and know it's reliable and work well in these kind of scenarios. I'm trying not to reinvent the wheel if I don't have to, allowing me to focus more on differentiating features.</p>
         <p>The <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html#/elements/ChlgDropdown">API page</a> has been built directly from the code. Each property, methods, event and css variables are commented in the code. Polymer CLI then allows for parsing the file and extracting the information into a JSON file. This file can then be consumed, in this case by an iron-component-page component but this could be a custom component for a Design System, to produce a documentation/API page.</p>
 
         <h2>Styling</h2>
-        <p>The dropdown is currently styled using sass and css variables. The css variables allow flexibility: they could be used in a theme where theme file would define those variables to what the dropdown should look like, allowing for applying different themes easily. They also allow custom external override, giving flexibility for external developers to style the dropdown as well as override a potential theme. This can be useful for styling dropdowns differently based on their use (navigation vs selection for example). Please see the <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html#/elements/ChlgDropdown">the API</a> for a list of the currently available css variables. More variables can be added for finer granular control of the styling.</p>
+        <p>The dropdown is currently styled using sass and css variables. The css variables allow flexibility: they could be used in a theme where the theme file would define those variables to what the dropdown should look like, allowing for applying different themes easily. They also allow custom external override, giving flexibility for external developers to style the dropdown as well as override a potential theme. This can be useful for styling dropdowns differently based on their use (navigation vs selection for example). Please see the <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html#/elements/ChlgDropdown">the API</a> for a list of the currently available css variables. More variables can be added for finer granular control of the styling.</p>
         <p>The default style makes use of the different state of the trigger: hovered, pressed and normal. The dropdown items use different shades of blue to represent selection and hover, allowing distinction by color blind people. Focus on an item, useful for keyboard navigation, is represented by a black border.</p>
 
         <h2>Defining items and watching selection</h2>
@@ -165,7 +166,7 @@
         </div>
 
         <h2>Multi Mode</h2>
-        <p>The dropdown can use a 'multi' mode, allowing the user to select multiple values rather than a single one. The values will be reflected in the trigger, up to a certain maximum width that can be configured, but that reflection value can be customized</p>
+        <p>The dropdown can use a 'multi' mode, allowing the user to select multiple values rather than a single one. The values will be reflected in the trigger, up to a certain maximum width that can be configured, but that reflection value can be customized through a custom function as discussed above.</p>
         <div class="container">
           <div class="flex flex--col">
             <h4>Multi mode</h4>
@@ -203,6 +204,9 @@
             </chlg-dropdown>
           </div>
         </div>
+
+        <h2>Internationalization</h2>
+        <p>Currently all string values can be passed externally (including the default "Select" text), ensuring the dropdown is fully localizable.</p>
       </div>
     </div>
 
