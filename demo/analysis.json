@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "elements": [
     {
-      "description": "### Styling\n\nThe following custom properties are available for styling of the dropdown content.\nSee the documentation for px-buttons-design for variables related to the styling of the invoking button.\n\nCustom property | Description\n:----------------|:-------------\n`--chlg-dropdown-trigger-max-width` | Max width for the dropdown trigger\n`--chlg-dropdown-trigger-bg-color` | Background color for the trigger in its normal state\n`--chlg-dropdown-trigger-bg-color--hover` | Background color for the trigger when hovered\n`--chlg-dropdown-trigger-bg-color--pressed` | Background color for the trigger when pressed\n`--chlg-dropdown-border-color` | Border color for both the trigger and the menu\n`--chlg-dropdown-content-bg-color` | Background color for the content menu\n`--chlg-dropdown-content-color` | Text color for the drodpown content\n`--chlg-dropdown-item-bg-color--hover` | Background color for an hovered menu item\n`--chlg-dropdown-text-color--hover` | Text color for an hovered menu item\n`--chlg-dropdown-item-bg-color--selected` | Background color for a selected menu item\n`--chlg-dropdown-text-color--selected` | Text color for an hovered menu item\n`--chlg-dropdown-item-bg-color--disabled` | Background color for a disabled menu item\n`--chlg-dropdown-text-color--disabled` | Text color for an hovered menu item\n`--chlg-drodpdown-focus-border-color` | Color of the focus border used for keyboard navigation\n\n`chlg-dropdown`\nA flexible dropdown for our project",
+      "description": "### Styling\n\nThe following css variables are available for styling the dropdown\n\nCustom property | Description\n:----------------|:-------------\n`--chlg-dropdown-trigger-max-width` | Max width for the dropdown trigger\n`--chlg-dropdown-trigger-bg-color` | Background color for the trigger in its normal state\n`--chlg-dropdown-trigger-bg-color--hover` | Background color for the trigger when hovered\n`--chlg-dropdown-trigger-bg-color--pressed` | Background color for the trigger when pressed\n`--chlg-dropdown-border-color` | Border color for both the trigger and the menu\n`--chlg-dropdown-content-bg-color` | Background color for the content menu\n`--chlg-dropdown-content-color` | Text color for the drodpown content\n`--chlg-dropdown-item-bg-color--hover` | Background color for an hovered menu item\n`--chlg-dropdown-text-color--hover` | Text color for an hovered menu item\n`--chlg-dropdown-item-bg-color--selected` | Background color for a selected menu item\n`--chlg-dropdown-text-color--selected` | Text color for an hovered menu item\n`--chlg-dropdown-item-bg-color--disabled` | Background color for a disabled menu item\n`--chlg-dropdown-text-color--disabled` | Text color for an hovered menu item\n`--chlg-drodpdown-focus-border-color` | Color of the focus border used for keyboard navigation\n\n`chlg-dropdown`\nA flexible dropdown for our project",
       "summary": "",
       "path": "chlg-dropdown.html",
       "properties": [
@@ -588,11 +588,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 122,
+              "line": 124,
               "column": 10
             },
             "end": {
-              "line": 126,
+              "line": 128,
               "column": 11
             }
           },
@@ -610,11 +610,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 133,
+              "line": 135,
               "column": 10
             },
             "end": {
-              "line": 136,
+              "line": 138,
               "column": 11
             }
           },
@@ -630,11 +630,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 146,
+              "line": 148,
               "column": 10
             },
             "end": {
-              "line": 149,
+              "line": 151,
               "column": 11
             }
           },
@@ -651,11 +651,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 154,
+              "line": 156,
               "column": 10
             },
             "end": {
-              "line": 156,
+              "line": 158,
               "column": 11
             }
           },
@@ -670,11 +670,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 164,
+              "line": 166,
               "column": 10
             },
             "end": {
-              "line": 167,
+              "line": 169,
               "column": 11
             }
           },
@@ -690,11 +690,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 172,
+              "line": 174,
               "column": 10
             },
             "end": {
-              "line": 175,
+              "line": 177,
               "column": 11
             }
           },
@@ -710,11 +710,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 180,
+              "line": 182,
               "column": 10
             },
             "end": {
-              "line": 183,
+              "line": 185,
               "column": 11
             }
           },
@@ -730,11 +730,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 188,
+              "line": 190,
               "column": 10
             },
             "end": {
-              "line": 191,
+              "line": 193,
               "column": 11
             }
           },
@@ -750,11 +750,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 196,
+              "line": 198,
               "column": 10
             },
             "end": {
-              "line": 198,
+              "line": 200,
               "column": 11
             }
           },
@@ -769,11 +769,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 210,
+              "line": 212,
               "column": 10
             },
             "end": {
-              "line": 215,
+              "line": 217,
               "column": 11
             }
           },
@@ -789,11 +789,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 220,
+              "line": 222,
               "column": 10
             },
             "end": {
-              "line": 222,
+              "line": 224,
               "column": 11
             }
           },
@@ -808,11 +808,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 228,
+              "line": 230,
               "column": 10
             },
             "end": {
-              "line": 231,
+              "line": 233,
               "column": 11
             }
           },
@@ -828,11 +828,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 243,
+              "line": 245,
               "column": 10
             },
             "end": {
-              "line": 245,
+              "line": 247,
               "column": 11
             }
           },
@@ -847,11 +847,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 250,
+              "line": 252,
               "column": 11
             },
             "end": {
-              "line": 253,
+              "line": 255,
               "column": 11
             }
           },
@@ -867,11 +867,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 259,
+              "line": 261,
               "column": 10
             },
             "end": {
-              "line": 262,
+              "line": 264,
               "column": 11
             }
           },
@@ -881,17 +881,57 @@
           "defaultValue": "\"click\""
         },
         {
+          "name": "horizontalAlign",
+          "type": "string",
+          "description": "The orientation against which to align the dropdown content horizontally relative to the dropdown trigger. \n- left\n- right\n- center\n- auto",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 273,
+              "column": 10
+            },
+            "end": {
+              "line": 276,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"left\""
+        },
+        {
+          "name": "verticalAlign",
+          "type": "string",
+          "description": "The orientation against which to align the dropdown content vertically relative to the dropdown trigger. \n- top\n- bottom\n- middle\n- auto",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 10
+            },
+            "end": {
+              "line": 288,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"top\""
+        },
+        {
           "name": "_hoverCloseTiming",
           "type": "number",
           "description": "Time (ms) after which the dropdown closes when mousing out in\nhover interaction mode",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 268,
+              "line": 294,
               "column": 10
             },
             "end": {
-              "line": 271,
+              "line": 297,
               "column": 11
             }
           },
@@ -907,11 +947,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 276,
+              "line": 302,
               "column": 10
             },
             "end": {
-              "line": 279,
+              "line": 305,
               "column": 11
             }
           },
@@ -927,11 +967,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 284,
+              "line": 310,
               "column": 10
             },
             "end": {
-              "line": 287,
+              "line": 313,
               "column": 11
             }
           },
@@ -1188,11 +1228,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 301,
+              "line": 327,
               "column": 6
             },
             "end": {
-              "line": 310,
+              "line": 336,
               "column": 7
             }
           },
@@ -3109,11 +3149,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 316,
+              "line": 342,
               "column": 6
             },
             "end": {
-              "line": 324,
+              "line": 350,
               "column": 7
             }
           },
@@ -3130,11 +3170,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 326,
+              "line": 352,
               "column": 6
             },
             "end": {
-              "line": 345,
+              "line": 371,
               "column": 7
             }
           },
@@ -3147,11 +3187,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 351,
+              "line": 377,
               "column": 6
             },
             "end": {
-              "line": 363,
+              "line": 389,
               "column": 7
             }
           },
@@ -3168,11 +3208,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 365,
+              "line": 391,
               "column": 6
             },
             "end": {
-              "line": 373,
+              "line": 399,
               "column": 7
             }
           },
@@ -3189,11 +3229,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 379,
+              "line": 405,
               "column": 6
             },
             "end": {
-              "line": 381,
+              "line": 407,
               "column": 7
             }
           },
@@ -3213,11 +3253,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 383,
+              "line": 409,
               "column": 6
             },
             "end": {
-              "line": 394,
+              "line": 420,
               "column": 7
             }
           },
@@ -3240,11 +3280,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 396,
+              "line": 422,
               "column": 6
             },
             "end": {
-              "line": 398,
+              "line": 424,
               "column": 7
             }
           },
@@ -3261,11 +3301,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 400,
+              "line": 426,
               "column": 6
             },
             "end": {
-              "line": 402,
+              "line": 428,
               "column": 7
             }
           },
@@ -3282,11 +3322,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 408,
+              "line": 434,
               "column": 6
             },
             "end": {
-              "line": 412,
+              "line": 438,
               "column": 7
             }
           },
@@ -3299,11 +3339,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 414,
+              "line": 440,
               "column": 6
             },
             "end": {
-              "line": 421,
+              "line": 447,
               "column": 7
             }
           },
@@ -3320,11 +3360,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 430,
+              "line": 456,
               "column": 6
             },
             "end": {
-              "line": 452,
+              "line": 478,
               "column": 7
             }
           },
@@ -3337,11 +3377,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 457,
+              "line": 483,
               "column": 6
             },
             "end": {
-              "line": 486,
+              "line": 512,
               "column": 7
             }
           },
@@ -3354,11 +3394,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 488,
+              "line": 514,
               "column": 6
             },
             "end": {
-              "line": 497,
+              "line": 523,
               "column": 7
             }
           },
@@ -3375,11 +3415,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 503,
+              "line": 529,
               "column": 6
             },
             "end": {
-              "line": 519,
+              "line": 545,
               "column": 7
             }
           },
@@ -3392,11 +3432,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 525,
+              "line": 551,
               "column": 6
             },
             "end": {
-              "line": 550,
+              "line": 576,
               "column": 7
             }
           },
@@ -3413,11 +3453,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 555,
+              "line": 581,
               "column": 6
             },
             "end": {
-              "line": 573,
+              "line": 599,
               "column": 7
             }
           },
@@ -3437,11 +3477,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 579,
+              "line": 605,
               "column": 6
             },
             "end": {
-              "line": 614,
+              "line": 640,
               "column": 7
             }
           },
@@ -3454,11 +3494,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 619,
+              "line": 645,
               "column": 6
             },
             "end": {
-              "line": 630,
+              "line": 656,
               "column": 7
             }
           },
@@ -3475,11 +3515,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 636,
+              "line": 662,
               "column": 6
             },
             "end": {
-              "line": 671,
+              "line": 697,
               "column": 7
             }
           },
@@ -3496,11 +3536,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 677,
+              "line": 703,
               "column": 6
             },
             "end": {
-              "line": 696,
+              "line": 722,
               "column": 7
             }
           },
@@ -3517,11 +3557,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 698,
+              "line": 724,
               "column": 6
             },
             "end": {
-              "line": 723,
+              "line": 749,
               "column": 7
             }
           },
@@ -3537,6 +3577,23 @@
               "name": "forward"
             }
           ]
+        },
+        {
+          "name": "focus",
+          "description": "Gives focus to the dropdown, effectively to its trigger",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 754,
+              "column": 6
+            },
+            "end": {
+              "line": 758,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
         }
       ],
       "staticMethods": [
@@ -4483,11 +4540,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 107,
+          "line": 109,
           "column": 4
         },
         "end": {
-          "line": 724,
+          "line": 759,
           "column": 5
         }
       },
@@ -4500,11 +4557,11 @@
           "description": "A flag which reflects/sets the states of the dropdown: menu opened or closed",
           "sourceRange": {
             "start": {
-              "line": 122,
+              "line": 124,
               "column": 10
             },
             "end": {
-              "line": 126,
+              "line": 128,
               "column": 11
             }
           },
@@ -4516,11 +4573,11 @@
           "description": "Allows the user to select several items in a dropdown. When enabled each item in the\ndropdown will have a checkbox/tick indicating whether an item is currently selected.\nSelecting an item won't close the dropdown to allow further selection",
           "sourceRange": {
             "start": {
-              "line": 133,
+              "line": 135,
               "column": 10
             },
             "end": {
-              "line": 136,
+              "line": 138,
               "column": 11
             }
           },
@@ -4532,11 +4589,11 @@
           "description": "represents the value(s) currently selected. Based on `selectBy` it's either :\n- an item value\n- an item key\n- a complete item\n\nif `multi` is on then this will be an array rather than a single value",
           "sourceRange": {
             "start": {
-              "line": 146,
+              "line": 148,
               "column": 10
             },
             "end": {
-              "line": 149,
+              "line": 151,
               "column": 11
             }
           },
@@ -4548,11 +4605,11 @@
           "description": "Drives what is reflected in `selectedValues`. Can be either:\n- 'value'\n- 'key'\n- 'item'",
           "sourceRange": {
             "start": {
-              "line": 164,
+              "line": 166,
               "column": 10
             },
             "end": {
-              "line": 167,
+              "line": 169,
               "column": 11
             }
           },
@@ -4564,11 +4621,11 @@
           "description": "When enabled adds an input above the first dropdown item to allow searching based on items values",
           "sourceRange": {
             "start": {
-              "line": 172,
+              "line": 174,
               "column": 10
             },
             "end": {
-              "line": 175,
+              "line": 177,
               "column": 11
             }
           },
@@ -4580,11 +4637,11 @@
           "description": "Flag to hide the chevron on the default dropdown trigger",
           "sourceRange": {
             "start": {
-              "line": 180,
+              "line": 182,
               "column": 10
             },
             "end": {
-              "line": 183,
+              "line": 185,
               "column": 11
             }
           },
@@ -4596,11 +4653,11 @@
           "description": "Items to be displayed in the dropdown. Each item is an object that can have\nthe following properties:\n- key (mandatory): unique key for this item\n- value (mandatory): value to display for this item\n- selected: whether this item should be selected. When a user selects an item\nit will be appropriately reflected in the `items` array\n- disabled: whether this item should be disabled (different look and can't be\nselected)",
           "sourceRange": {
             "start": {
-              "line": 210,
+              "line": 212,
               "column": 10
             },
             "end": {
-              "line": 215,
+              "line": 217,
               "column": 11
             }
           },
@@ -4612,11 +4669,11 @@
           "description": "The text displayed in the trigger element, based on what values are selected. Can be set as well",
           "sourceRange": {
             "start": {
-              "line": 220,
+              "line": 222,
               "column": 10
             },
             "end": {
-              "line": 222,
+              "line": 224,
               "column": 11
             }
           },
@@ -4628,11 +4685,11 @@
           "description": "The text to display in the trigger element, if no values are\nselected",
           "sourceRange": {
             "start": {
-              "line": 228,
+              "line": 230,
               "column": 10
             },
             "end": {
-              "line": 231,
+              "line": 233,
               "column": 11
             }
           },
@@ -4644,11 +4701,11 @@
           "description": "allows to customize the displayed value. If defined this function\nwill be called every time `displayValue` should change. It should\nreturn the desired `displayValue`.\nIt will be run in the context of the dropdown and will have two\narguments:\n- `selectedValues`: same property as the one oin the dropdown\n- `value`: represent the selected values, \"by value\". Will\n  be either a string or an array depending on `multi`",
           "sourceRange": {
             "start": {
-              "line": 243,
+              "line": 245,
               "column": 10
             },
             "end": {
-              "line": 245,
+              "line": 247,
               "column": 11
             }
           },
@@ -4660,11 +4717,43 @@
           "description": "Defines how the user interact (open/close) the dropdown. Can be either 'click'\nor 'hover' (or anything else to manually handle opening and closing)",
           "sourceRange": {
             "start": {
-              "line": 259,
+              "line": 261,
               "column": 10
             },
             "end": {
-              "line": 262,
+              "line": 264,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "horizontal-align",
+          "description": "The orientation against which to align the dropdown content horizontally relative to the dropdown trigger. \n- left\n- right\n- center\n- auto",
+          "sourceRange": {
+            "start": {
+              "line": 273,
+              "column": 10
+            },
+            "end": {
+              "line": 276,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "vertical-align",
+          "description": "The orientation against which to align the dropdown content vertically relative to the dropdown trigger. \n- top\n- bottom\n- middle\n- auto",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 10
+            },
+            "end": {
+              "line": 288,
               "column": 11
             }
           },
@@ -4703,11 +4792,11 @@
           "range": {
             "file": "chlg-dropdown.html",
             "start": {
-              "line": 44,
+              "line": 43,
               "column": 4
             },
             "end": {
-              "line": 52,
+              "line": 51,
               "column": 11
             }
           }
@@ -4718,11 +4807,11 @@
           "range": {
             "file": "chlg-dropdown.html",
             "start": {
-              "line": 67,
+              "line": 69,
               "column": 8
             },
             "end": {
-              "line": 67,
+              "line": 69,
               "column": 35
             }
           }
@@ -4733,11 +4822,11 @@
           "range": {
             "file": "chlg-dropdown.html",
             "start": {
-              "line": 91,
+              "line": 93,
               "column": 8
             },
             "end": {
-              "line": 91,
+              "line": 93,
               "column": 35
             }
           }

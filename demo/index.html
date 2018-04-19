@@ -57,30 +57,52 @@
           <li><a href="https://www.webcomponents.org/element/PolymerElements/iron-dropdown/elements/iron-dropdown">iron-dropdown</a> which is a low level component provided by the Polymer team allowing positioning of an item relative to an other and showing/hiding this item. This solves common problem such as repositioning a menu when outside of the window, chosing alignment, etc...</li>
           <li><a href="https://www.webcomponents.org/element/PolymerElements/iron-a11y-keys">iron-a11y-keys</a> is a wrapper around keyboard press events, making it easier to organize the code when listening to keyboard events.</li>
         </ul>
-        <p>I haven't chosen those two components to "cut corners" but those are the decisions I would have made if genuinely building this dropdown as part of an app or design system. Iron-dropdown solves a common problem of positioning an item with a lot of flexibility and configuration options which can be exposed to the end developer. I have worked with it and know it's reliable and work well in these kind of scenarios, don't reinvent the wheel if you dont have to. This allows more focus on differentiating features.</p>
+        <p>I haven't chosen those two components to "cut corners" but those are the decisions I would have made if genuinely building this dropdown as part of an app or design system. Iron-dropdown solves a common problem of positioning an item with a lot of flexibility and configuration options which can be exposed to the end developer. I have worked with it and know it's reliable and work well in these kind of scenarios, I'm trying no to reinvent the wheel if I don't have to, allowing me to focus more on differentiating features.</p>
         <p>The <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html">API page</a> has been built directly from the code. Each property, methods, event and css variables are commented in the code. Polymer CLI then allows for parsing the file and extracting the information into a JSON file. This file can then be consumed, in this case by an iron-component-page component but this could be a custom component for a Design System, to produce a documentation/API page.</p>
 
         <h2>Styling</h2>
         <p>The dropdown is currently styled using sass and css variables. The css variables allow flexibility: they could be used in a theme where theme file would define those variables to what the dropdown should look like, allowing for applying different themes easily. They also allow custom external override, giving flexibility for external developers to style the dropdown as well as override a potential theme. This can be useful for styling dropdowns differently based on their use (navigation vs selection for example). Please see the <a href="https://benoitjchevalier.github.io/chlg-dropdown/demo/api.html">the API</a> for a list of the currently available css variables. More variables can be added for finer granular control of the styling.</p>
         <p>The default style makes use of the different state of the trigger: hovered, pressed and normal. The dropdown items use different shades of blue to represent selection and hover, allowing distinction by color blind people. Focus on an item, useful for keyboard navigation, is represented by a black border.</p>
 
+        <h2>Defining items and watching selection</h2>
+        <p>The items available in the dropdown menus are passed through the 'items' array property. Each item is an object which needs a 'key' and 'value'. Additionally it can have a 'selected' and/or 'disabled' property which will represent the state of the item in the dropdown. Any custom property can be added and will be retained.</p>
+        <p>Selected items are reflected in the 'selectedValues' property, based on the 'selectBy' property: it will either contain the key, the value or the whole item.</p>
+        <div class="container">
+            <div class="flex flex--col">
+              <h4>Default, select by value, Pandas disabled</h4>
+              <chlg-dropdown id="ddReflect0" class="ddToReflect" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas", "disabled": true}]'></chlg-dropdown>
+              <div id="reflectRes0">Select item to see selected values</div>
+            </div>
+            <div class="flex flex--col">
+              <h4>Select by key, Pandas initially selected</h4>
+              <chlg-dropdown id="ddReflect1" class="ddToReflect" select-by="key" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas", "selected": true}]'></chlg-dropdown>
+              <div id="reflectRes1">Select item to see selected values</div>
+            </div>
+            <div class="flex flex--col">
+              <h4>Select by item</h4>
+              <chlg-dropdown id="ddReflect2" class="ddToReflect" select-by="item" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+              <div id="reflectRes2">Select item to see selected values</div>
+            </div>
+          </div>
+
+
         <h2>Dropdown positioning</h2>
         <p>As mentioned above the dropdown menu position, relative to its trigger, can be configured through iron-dropdown. verticalAlign and horizontalAlign will tried to be matched, but if the dropdown is cropped then other values might be chosen (you can try by resizing the browser so that the trigger is just above the bottom of the browser. In that configuration the dropdown will open on the side/up even if it is configured to open on the bottom)</p>
 
         <div class="container">
-            <div class="flex flex--col">
-              <h4>Default, bottom left</h4>
-              <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
-            </div>
-            <div class="flex flex--col">
-              <h4>Top right</h4>
-              <chlg-dropdown horizontal-align="right" vertical-align="bottom" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
-            </div>
-            <div class="flex flex--col">
-              <h4>Middle right</h4>
-              <chlg-dropdown horizontal-align="left" vertical-align="middle" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
-            </div>
+          <div class="flex flex--col">
+            <h4>Default, bottom left</h4>
+            <chlg-dropdown items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
           </div>
+          <div class="flex flex--col">
+            <h4>Top right</h4>
+            <chlg-dropdown horizontal-align="right" vertical-align="bottom" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+          <div class="flex flex--col">
+            <h4>Middle right</h4>
+            <chlg-dropdown horizontal-align="left" vertical-align="middle" items='[{"key": 1, "value": "Cats"}, {"key": 2, "value": "Dogs"}, {"key": 3, "value": "Pandas"}]'></chlg-dropdown>
+          </div>
+        </div>
 
         <h2>Mouse Interaction</h2>
         <p>The dropdown can use three different types of mouse interaction based on the "interactionMode" property:</p>
@@ -129,7 +151,6 @@
           </div>
         </div>
 
-        <h3>Keyboard Navigation</h3>
         <h2>Accessibility</h2>
         <p>The dropdown has been designed with accessibility in mind. The color scheme allows color blind people to differentiate between different state. Keyboard navigation is available: when the trigger is focused the dropdown can be opened with Space and Enter. The first item is focused and focus can be changed with Up and Down. Selection can be made with Space/Enter and the dropdown can be closed with Esc.</p>
         <p>The dropdown also follows WAI-ARIA principles, ensuring the browser knows the trigger controls a menu and dynamically letting it know what is hidden and visible through aria-hidden.</p>
@@ -146,8 +167,7 @@
         <h2>Multi Mode</h2>
         <h2>Search Mode</h2>
 
-        <h3>Bloh</h3>
-        <p>Blouh</p>
+        <h2>Custom Content</h2
       </div>
     </div>
 
@@ -157,10 +177,20 @@
   <script>
     window.addEventListener('WebComponentsReady', () => {
       const focusButton = document.getElementById('focus'),
-            ddToFocus = document.getElementById('toFocus');
+            ddToFocus = document.getElementById('toFocus'),
+            ddToReflect = document.querySelectorAll('.ddToReflect');
+            
 
       focusButton.addEventListener('click', () => {
         ddToFocus.focus();
+      });
+
+      ddToReflect.forEach((dd) => {
+        dd.addEventListener('selected-values-changed', (evt) => {
+          let index = evt.target.id[evt.target.id.length-1];
+
+          document.getElementById(`reflectRes${index}`).innerText = JSON.stringify(evt.target.selectedValues);
+        });
       });
       // const multiDropdown = document.getElementById('multi'),
       //     reflectText = document.getElementById('reflect');
