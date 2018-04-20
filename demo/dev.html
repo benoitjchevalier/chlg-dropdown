@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>chlg-dropdown demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+
+    <link rel="import" href="../chlg-dropdown.html">
+    <style>
+      .container {
+        flex: 1;
+        border: 1px solid grey;
+        min-width: 300px;
+        height: 150px;
+      }
+      .flex {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex">
+
+      <div class="container">
+        <h3>Basic dropdown</h3>
+        <chlg-dropdown
+          items='[{"key":1, "value": "Polar Bear"},
+                  {"key": 2,"value":"Cat", "disabled": true},
+                  {"key":3, "value": "Dogs", "selected": true},
+                  {"key": 4, "value": "Koala"},
+                  {"key": 5, "value": "Rabbit"}]'>
+        </chlg-dropdown>
+      </div>
+
+      <div class="container">
+        <h3>Multi mode</h3>
+          <chlg-dropdown
+            id="multi"
+            multi
+            items='[{"key":1, "value": "Polar Bear"},
+                    {"key": 2,"value":"Cat", "disabled": true},
+                    {"key":3, "value": "Dogs", "selected": false},
+                    {"key": 4, "value": "Koala"},
+                    {"key": 5, "value": "Rabbit"}]'>
+          </chlg-dropdown>
+      </div>
+
+    </div>
+
+    <div class="flex">
+      <div class="container">
+          <h3>Select by key</h3>
+            <chlg-dropdown
+              select-by="key"
+              items='[{"key":1, "value": "Polar Bear"},
+                      {"key": 2,"value":"Cat", "disabled": true},
+                      {"key":3, "value": "Dogs", "selected": true},
+                      {"key": 4, "value": "Koala"},
+                      {"key": 5, "value": "Rabbit"}]'>
+            </chlg-dropdown>
+        </div>
+
+        <div class="container">
+          <h3>Select by item</h3>
+            <chlg-dropdown
+              select-by="item"
+              items='[{"key":1, "value": "Polar Bear"},
+                      {"key": 2,"value":"Cat", "disabled": true},
+                      {"key":3, "value": "Dogs", "selected": true},
+                      {"key": 4, "value": "Koala"},
+                      {"key": 5, "value": "Rabbit"}]'>
+            </chlg-dropdown>
+        </div>
+    </div>
+
+    <div class="flex">
+      <div class="container">
+          <h3>Search mode</h3>
+            <chlg-dropdown
+              search
+              items='[{"key":1, "value": "Polar Bear"},
+                      {"key": 2,"value":"Cat", "disabled": true},
+                      {"key":3, "value": "Dogs", "selected": true},
+                      {"key": 4, "value": "Koala"},
+                      {"key": 5, "value": "Rabbit"}]'>
+            </chlg-dropdown>
+        </div>
+
+        <div class="container">
+          <h3>Interaction on hover</h3>
+            <chlg-dropdown
+              interaction-mode="hover"
+              items='[{"key":1, "value": "Polar Bear"},
+                      {"key": 2,"value":"Cat", "disabled": true},
+                      {"key":3, "value": "Dogs", "selected": true},
+                      {"key": 4, "value": "Koala"},
+                      {"key": 5, "value": "Rabbit"}]'>
+            </chlg-dropdown>
+        </div>
+    </div>
+
+    <div class="flex">
+      <div class="container">
+          <h3>Custom trigger</h3>
+            <chlg-dropdown
+              search-mode
+              items='[{"key":1, "value": "Polar Bear"},
+                      {"key": 2,"value":"Cat", "disabled": true},
+                      {"key":3, "value": "Dogs", "selected": true},
+                      {"key": 4, "value": "Koala"},
+                      {"key": 5, "value": "Rabbit"}]'>
+                <button slot="trigger" tabindex="-1">Custom external trigger</button>
+            </chlg-dropdown>
+        </div>
+
+      </div>
+  </body>
+  <script>
+    window.addEventListener('WebComponentsReady', () => {
+
+    });
+
+
+
+  </script>
+</html>
