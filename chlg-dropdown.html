@@ -317,7 +317,7 @@ Custom property | Description
 
       static get observers() {
         return [
-          '_updateSelectedValues(items, items.*.selected)',
+          '_updateSelectedValues(items, items.*.selected, selectBy)',
           '_filterOnSearch(_searchText)',
           '_computeDisplayValue(selectedValues, multi)',
           '_openedChanged(opened)',
@@ -627,12 +627,16 @@ Custom property | Description
               }
             });
           } else {
-            this.items.forEach((item) => {
-              if(item.selected) {
-                result = this._getInfoFromItem(item);
-                internalResult = item;
+            for(var i=0; i<this.items.length; i++) {
+
+              //in single mode if we end up with several item selected
+              //only get the first one
+              if(this.items[i].selected) {
+                result = this._getInfoFromItem(this.items[i]);
+                internalResult = this.items[i];
+                break;
               }
-            });
+            }
           }
 
           this._selectedItems = internalResult;

@@ -15,37 +15,195 @@
 
     <test-fixture id="BasicTestFixture">
       <template>
-        <chlg-dropdown></chlg-dropdown>
+        <chlg-dropdown items='[{"key":1, "value": "Polar Bear"},
+        {"key": 2,"value":"Cat", "disabled": true},
+        {"key":3, "value": "Dogs", "selected": true},
+        {"key": 4, "value": "Koala", "selected": true},
+        {"key": 5, "value": "Rabbit"}]'></chlg-dropdown>
       </template>
     </test-fixture>
 
-    <test-fixture id="ChangedPropertyTestFixture">
+    <test-fixture id="opened">
+        <template>
+          <chlg-dropdown opened items='[{"key":1, "value": "Polar Bear"},
+          {"key": 2,"value":"Cat", "disabled": true},
+          {"key":3, "value": "Dogs", "selected": true},
+          {"key": 4, "value": "Koala"},
+          {"key": 5, "value": "Rabbit"}]'></chlg-dropdown>
+        </template>
+      </test-fixture>
+
+    <test-fixture id="bykey">
       <template>
-        <chlg-dropdown prop1="new-prop1"></chlg-dropdown>
+        <chlg-dropdown select-by="key" opened items='[{"key":1, "value": "Polar Bear"},
+        {"key": 2,"value":"Cat", "disabled": true},
+        {"key":3, "value": "Dogs", "selected": true},
+        {"key": 4, "value": "Koala"},
+        {"key": 5, "value": "Rabbit"}]'></chlg-dropdown>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="byitem">
+      <template>
+        <chlg-dropdown select-by="item" opened items='[{"key":1, "value": "Polar Bear"},
+        {"key": 2,"value":"Cat", "disabled": true},
+        {"key":3, "value": "Dogs", "selected": true},
+        {"key": 4, "value": "Koala"},
+        {"key": 5, "value": "Rabbit"}]'></chlg-dropdown>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="multi">
+      <template>
+        <chlg-dropdown multi opened items='[{"key":1, "value": "Polar Bear"},
+        {"key": 2,"value":"Cat", "disabled": true},
+        {"key":3, "value": "Dogs", "selected": true},
+        {"key": 4, "value": "Koala", "selected": true},
+        {"key": 5, "value": "Rabbit"}]'></chlg-dropdown>
       </template>
     </test-fixture>
 
     <script>
-      suite('chlg-dropdown', () => {
+      suite('chlg-dropdown single', () => {
 
-        test('instantiating the element with default properties works', () => {
+        test('Last selected item is reflected', (done) => {
           const element = fixture('BasicTestFixture');
-          assert.equal(element.prop1, 'chlg-dropdown');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello chlg-dropdown!');
+
+          //wait for debounce to kick in
+          window.setTimeout(() => {
+            assert.equal(element.selectedValues, 'Dogs');
+            done();
+          },50);
         });
 
-        test('setting a property on the element works', () => {
-          // Create a test fixture
-          const element = fixture('ChangedPropertyTestFixture');
-          assert.equal(element.prop1, 'new-prop1');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
+        test('closed by default', () => {
+          const element = fixture('BasicTestFixture');
+          assert.equal(element.opened, false);
+          assert.equal(element.shadowRoot.querySelector('iron-dropdown').style['display'], 'none');
         });
 
+        test('opening shows the menu', (done) => {
+          const element = fixture('BasicTestFixture');
+          element.set('opened', true);
+          
+          window.setTimeout(() => {
+            assert.equal(element.shadowRoot.querySelector('iron-dropdown').style['display'], '');
+            done();
+          },50);
+        });
+
+        test('open by click', () => {
+          const element = fixture('BasicTestFixture');
+
+          assert.equal(element.opened, false);
+          
+          element.shadowRoot.querySelector('#trigger').click();
+
+          assert.equal(element.opened, true);
+        });
+
+        test('opened through attribute', (done) => {
+          const element = fixture('opened');
+          assert.equal(element.opened, true)
+          window.setTimeout(() => {
+            assert.equal(element.shadowRoot.querySelector('iron-dropdown').style['display'], '');
+            done();
+          },50);
+          
+        });
+
+        test('Only one item is reflected even though 2 were set', (done) => {
+          const element = fixture('opened');
+         
+          window.setTimeout(() => {
+            element.$.dropdownContent.querySelectorAll('.item').forEach((item, i) => {
+              assert.equal(item.classList.contains('selected'), i===2);
+            });
+            done()
+          },50);
+        });
+
+        test('Click on item to select it', (done) => {
+          const element = fixture('opened');
+         
+         //wait for opening
+          window.setTimeout(() => {
+
+            //click first item
+            element.$.dropdownContent.querySelector('.item').click();
+
+            //wait for debounce and async closure of menu
+            window.setTimeout(() => {
+              //check value and that we closed
+              assert.equal(element.selectedValues, 'Polar Bear');
+              assert.equal(element.opened, false);
+              done();
+            }, 50)
+          },50);
+        });
+
+
+        test('Select by key', (done) => {
+          const element = fixture('bykey');
+
+          //wait for debounce to kick in
+          window.setTimeout(() => {
+            assert.equal(element.selectedValues, 3);
+            done();
+          },50);
+        });
+
+        test('Select by item', (done) => {
+          const element = fixture('byitem');
+
+          //wait for debounce to kick in
+          window.setTimeout(() => {
+            assert.deepEqual(element.selectedValues, {"key":3, "value": "Dogs", "selected": true});
+            done();
+          },50);
+        });
+
+        test('Multi: 2 items selected by default', (done) => {
+          const element = fixture('multi');
+         
+          window.setTimeout(() => {
+            element.$.dropdownContent.querySelectorAll('.item').forEach((item, i) => {
+              assert.equal(item.classList.contains('selected'), i===3 || i===2);
+            });
+            done()
+          },50);
+        });
+
+        test('Multi: selected values for 2 items', (done) => {
+          const element = fixture('multi');
+         
+          window.setTimeout(() => {
+            assert.deepEqual(element.selectedValues, ['Dogs', 'Koala']);
+            done()
+          },50);
+        });
+
+        test('multi: Click on item to select it', (done) => {
+          const element = fixture('multi');
+         
+         //wait for opening
+          window.setTimeout(() => {
+
+            //click first item
+            element.$.dropdownContent.querySelector('.item').click();
+
+            //wait for debounce and async closure of menu
+            window.setTimeout(() => {
+              //check value and that we did NOT close
+              assert.deepEqual(element.selectedValues, ['Polar Bear', 'Dogs', 'Koala']);
+              assert.equal(element.opened, true);
+              done();
+            }, 50)
+          },50);
+        });
       });
+
+      
     </script>
 
   </body>
